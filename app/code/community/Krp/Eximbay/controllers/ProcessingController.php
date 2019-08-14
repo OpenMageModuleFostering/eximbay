@@ -54,6 +54,12 @@ class Krp_Eximbay_ProcessingController extends Mage_Core_Controller_Front_Action
                 Mage::throwException('No order for processing found');
             }
 
+			Mage::log($session->getLastRealOrderId().' -> BaseTotalDue : '.$order->getBaseTotalDue().' OrderState : '.$order->getState(), null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');			
+			if(($order->getBaseTotalDue() == 0 && $order->getState() == Mage_Sales_Model_Order::STATE_PROCESSING)			
+					|| $order->getState() == Mage_Sales_Model_Order::STATE_CANCELED || $order->getState() == Mage_Sales_Model_Order::STATE_COMPLETE || $order->getState() == Mage_Sales_Model_Order::STATE_CLOSED){			
+				Mage::throwException(Mage::helper('eximbay')->__('Unable to initialize Eximbay'));			
+			}
+				               
             $order->setState(Mage_Sales_Model_Order::STATE_PENDING_PAYMENT, Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
                 Mage::helper('eximbay')->__('The customer was redirected to Eximbay.')
             );
