@@ -125,7 +125,7 @@ class Krp_Eximbay_ProcessingController extends Mage_Core_Controller_Front_Action
     	
     	Mage::log('rescode : '.$rescode.' resmsg : '.$resmsg, null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
     	
-    	if($rescode == 'XXXX'){
+    	if($rescode == 'XXXX' || $rescode == ''){
     		$message = $event->cancelEvent();
     	}else{
     		$message = $resmsg;

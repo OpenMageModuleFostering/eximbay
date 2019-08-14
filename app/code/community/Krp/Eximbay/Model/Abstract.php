@@ -102,7 +102,55 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
 
         return $this;
     }
-
+	
+    /**
+     * Detect Mobile Device
+     *
+     * @return boolean
+     */
+    public function isMobile()
+    {    	
+    	
+    	Mage::log("ISMOBILE : ".$_SERVER['HTTP_USER_AGENT'], null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
+    	
+    	$regex_match = "/(nokia|iphone|android|motorola|^mot\-|softbank|foma|docomo|kddi|up\.browser|up\.link|"  
+	                 . "htc|dopod|blazer|netfront|helio|hosin|huawei|novarra|CoolPad|webos|techfaith|palmsource|"  
+	                 . "blackberry|alcatel|amoi|ktouch|nexian|samsung|^sam\-|s[cg]h|^lge|ericsson|philips|sagem|wellcom|bunjalloo|maui|"  
+	                 . "symbian|smartphone|mmp|midp|wap|phone|windows ce|iemobile|^spice|^bird|^zte\-|longcos|pantech|gionee|^sie\-|portalmmm|"  
+	                 . "jig\s browser|hiptop|^ucweb|^benq|haier|^lct|opera\s*mobi|opera\*mini|320x320|240x320|176x220"  
+	                 . ")/i";  
+	
+	    if (preg_match($regex_match, strtolower($_SERVER['HTTP_USER_AGENT']))) {  
+	        return TRUE;  
+	    }  
+	
+	    if ((strpos(strtolower($_SERVER['HTTP_ACCEPT']),'application/vnd.wap.xhtml+xml') > 0) or ((isset($_SERVER['HTTP_X_WAP_PROFILE']) or isset($_SERVER['HTTP_PROFILE'])))) {  
+	        return TRUE;  
+	    }      
+	
+	    $mobile_ua = strtolower(substr($_SERVER['HTTP_USER_AGENT'], 0, 4));  
+	    $mobile_agents = array(  
+	        'w3c ','acs-','alav','alca','amoi','audi','avan','benq','bird','blac',  
+	        'blaz','brew','cell','cldc','cmd-','dang','doco','eric','hipt','inno',  
+	        'ipaq','java','jigs','kddi','keji','leno','lg-c','lg-d','lg-g','lge-',  
+	        'maui','maxo','midp','mits','mmef','mobi','mot-','moto','mwbp','nec-',  
+	        'newt','noki','oper','palm','pana','pant','phil','play','port','prox',  
+	        'qwap','sage','sams','sany','sch-','sec-','send','seri','sgh-','shar',  
+	        'sie-','siem','smal','smar','sony','sph-','symb','t-mo','teli','tim-',  
+	        'tosh','tsm-','upg1','upsi','vk-v','voda','wap-','wapa','wapi','wapp',  
+	        'wapr','webc','winw','winw','xda ','xda-');  
+	
+	    if (in_array($mobile_ua,$mobile_agents)) {  
+	        return TRUE;  
+	    }  
+	
+	    if (isset($_SERVER['ALL_HTTP']) && strpos(strtolower($_SERVER['ALL_HTTP']),'OperaMini') > 0) {  
+	        return TRUE;  
+	    }  
+	
+	    return FALSE;
+    }
+    
     /**
      * Return url of payment method
      *
@@ -110,12 +158,23 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
      */
     public function getUrl()
     {
-		$test_mode = Mage::getStoreConfig('payment/'.$this->getPaymentMethodCode().'/test');
-		if($test_mode){
-			return 'https://www.test.eximbay.com/web/payment2.0/payment_real.do';
+		if($this->getAPIVersion() == '170' || $this->getAPIVersion() == '180'){
+			if($this->isTestMode()){
+				if($this->isMobile())
+					return 'https://www.test.eximbay.com/web/mpayment/payment_real.do';
+				return 'https://www.test.eximbay.com/web/payment2.0/payment_real.do';
+			}else{
+				if($this->isMobile())
+					return 'https://www.eximbay.com/web/mpayment/payment_real.do';
+				return 'https://www.eximbay.com/web/payment2.0/payment_real.do';
+			}
 		}else{
-			return 'https://www.eximbay.com/web/payment2.0/payment_real.do';
-		}
+			if($this->isTestMode()){
+				return 'https://secureapi.test.eximbay.com/Gateway/BasicProcessor.krp';
+			}else{
+				return 'https://secureapi.eximbay.com/Gateway/BasicProcessor.krp';
+			}
+    	}
     }
 
     /**
@@ -182,6 +241,28 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
     }
     
     /**
+     * Return API version
+     *
+     * @return string
+     */
+    public function getAPIVersion()
+    {
+    	$version = Mage::getStoreConfig('payment/'.$this->getPaymentMethodCode().'/ver');
+    	return $version;
+    }
+    
+    /**
+     * Return working mode (test or production)
+     *
+     * @return string
+     */
+    public function isTestMode()
+    {
+    	$mode = Mage::getStoreConfig('payment/'.$this->getPaymentMethodCode().'/test');
+    	return $mode;
+    }
+    
+    /**
      * prepare params array to send it to gateway page via POST
      *
      * @return array
@@ -197,10 +278,8 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
             $email = $this->getOrder()->getCustomerEmail();
         }
         $amt = round($this->getOrder()->getGrandTotal(), 2);
-		$enc_secretKey = Mage::getStoreConfig('payment/'.$this->getPaymentMethodCode().'/secret_key');
-        $enc_mid = Mage::getStoreConfig('payment/'.$this->getPaymentMethodCode().'/mid');		
-		$secretKey = Mage::helper('core')->decrypt($enc_secretKey);
-        $mid = Mage::helper('core')->decrypt($enc_mid);
+        $secretKey = Mage::getStoreConfig('payment/'.$this->getPaymentMethodCode().'/secret_key');
+        $mid = Mage::getStoreConfig('payment/'.$this->getPaymentMethodCode().'/mid');
 		$ref = $order_id;
 		//$cur = Mage::getStoreConfig('payment/eximbay_acc/currency');
 		$displayType = $this->getDisplayType();
@@ -214,12 +293,20 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
 		//$fgkey = md5($linkBuf);
 		$fgkey = hash("sha256", $linkBuf);
 
-		$total = 0;
+		$txntype = 'SALE';
+		$ostype = '';
+		if($this->getAPIVersion() == '200'){
+			$txntype = 'PAYMENT';
+			$ostype = 'P';
+			if($this->isMobile()){
+				$ostype = 'M';
+			}
+		}
 		
 		$params = array(
-			'ver'      				=> '170',
+			'ver'      				=> $this->getAPIVersion(),
             'mid'      				=> $mid,
-			'txntype'      			=> 'SALE',
+			'txntype'      			=> $txntype,
 			'displaytype'      		=> $displayType,
 			'charset'	      		=> 'UTF-8',
             'ref'             		=> $ref,
@@ -236,9 +323,15 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
 			'param1'          		=> '',
 			'param2'          		=> '',
 			'param3'          		=> '',
+			'title1'          		=> '',
+			'title2'          		=> '',
+			'title3'          		=> '',
+			'title4'          		=> '',
 			'visitorid'				=> '',
+			'partnercode'			=> '',
 			'autoclose'				=> 'Y',
 			'directToReturn'		=> 'N',
+			'ostype'				=> $ostype,
 			'paymethod'       				=> $this->_paymentMethod,
 			'dm_billTo_city'				=> $billing->getCity(),
 			'dm_billTo_country'				=> $billing->getCountry_id(),
@@ -270,7 +363,7 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
 			foreach ($items as $itemId => $item)
 			{
 				$params['dm_item_'.$item_loop.'_product'] = $item->getName();
-				$params['dm_item_'.$item_loop.'_unitPrice'] = $item->getPrice();
+				$params['dm_item_'.$item_loop.'_unitPrice'] = number_format($item->getPrice(), 2, '.', '');		//round($item->getPrice(), 2);
 				$params['dm_item_'.$item_loop.'_quantity'] = $item->getQtyToInvoice();
 				
 				//if($item_loop > 0)

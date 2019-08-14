@@ -245,8 +245,7 @@ class Krp_Eximbay_Model_Event
             }
             
             if($params['rescode'] == '0000'){
-            	$enc_secretKey = Mage::getStoreConfig('payment/'.$this->_order->getPayment()->getMethodInstance()->getCode().'/secret_key');	
-				$secretKey = Mage::helper('core')->decrypt($enc_secretKey);
+				$secretKey = Mage::getStoreConfig('payment/'.$this->_order->getPayment()->getMethodInstance()->getCode().'/secret_key');
 				if (empty($secretKey)) {
 					Mage::log('Exception - Secretkey is empty.', null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
 					Mage::throwException('Secretkey is empty.');
