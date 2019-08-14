@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+<?php
 /**
  * Eximbay, Online Payment Module
  *
@@ -20,21 +19,12 @@
  * @copyright   Copyright (c) 2013 KRPartners Co.,Ltd (https://www.eximbay.com)
  * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
  */
--->
-<config> 
-	<modules> 
-	<!-- declare Mage_NewModule module -->
-		<Mage_Eximbay> 
-		<!-- this is an active module -->
-			<active>true</active> 
-			<!-- this module will be located in app/code/local code pool -->
-			<codePool>local</codePool> 
-			<!-- specify dependencies for correct module loading order -->
-			<depends> 
-				<Mage_Payment /> 
-			</depends> 
-			<!-- declare module's version information for database updates -->
-			<version>0.1.0</version> 
-		</Mage_Eximbay> 
-	</modules> 
-</config>
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $this->getLang() ?>" lang="<?php echo $this->getLang() ?>">
+<head>   
+</head>
+<body>
+    <?php echo $this->getChildHtml('content') ?>
+</body>
+</html>

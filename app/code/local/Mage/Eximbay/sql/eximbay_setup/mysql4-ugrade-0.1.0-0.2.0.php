@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+<?php
 /**
  * Eximbay, Online Payment Module
  *
@@ -20,21 +19,24 @@
  * @copyright   Copyright (c) 2013 KRPartners Co.,Ltd (https://www.eximbay.com)
  * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
  */
--->
-<config> 
-	<modules> 
-	<!-- declare Mage_NewModule module -->
-		<Mage_Eximbay> 
-		<!-- this is an active module -->
-			<active>true</active> 
-			<!-- this module will be located in app/code/local code pool -->
-			<codePool>local</codePool> 
-			<!-- specify dependencies for correct module loading order -->
-			<depends> 
-				<Mage_Payment /> 
-			</depends> 
-			<!-- declare module's version information for database updates -->
-			<version>0.1.0</version> 
-		</Mage_Eximbay> 
-	</modules> 
-</config>
+
+/* @var $installer Mage_Core_Model_Resource_Setup */
+$installer = $this;
+
+$installer->startSetup();
+$conn = $installer->getConnection();
+
+$select = $conn
+    ->select()
+    ->from($this->getTable('core/config_data'), array('scope', 'scope_id', 'path', 'value'))
+    ->where(new Zend_Db_Expr("path LIKE 'eximbay/eximbay%'"));
+$data = $conn->fetchAll($select);
+
+if (!empty($data)) {
+    foreach ($data as $key => $value) {
+        $data[$key]['path'] = preg_replace('/^eximbay\/eximbay/', 'payment/eximbay', $value['path']);
+    }
+    $conn->insertOnDuplicate($this->getTable('core/config_data'), $data, array('path'));
+    $conn->delete($this->getTable('core/config_data'), new Zend_Db_Expr("path LIKE 'eximbay/eximbay%'"));
+}
+$installer->endSetup();

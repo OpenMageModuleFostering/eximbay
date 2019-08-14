@@ -21,20 +21,22 @@
  * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
  */
 -->
-<config> 
-	<modules> 
-	<!-- declare Mage_NewModule module -->
-		<Mage_Eximbay> 
-		<!-- this is an active module -->
-			<active>true</active> 
-			<!-- this module will be located in app/code/local code pool -->
-			<codePool>local</codePool> 
-			<!-- specify dependencies for correct module loading order -->
-			<depends> 
-				<Mage_Payment /> 
-			</depends> 
-			<!-- declare module's version information for database updates -->
-			<version>0.1.0</version> 
-		</Mage_Eximbay> 
-	</modules> 
-</config>
+<layout version="0.1.0">
+    <eximbay_processing_payment>
+        <reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+        <reference name="content">
+            <block type="eximbay/payment" name="eximbay_payment" template="eximbay/payment.phtml" />
+        </reference>
+    </eximbay_processing_payment>
+
+    <eximbay_processing_placeform>
+        <reference name="root">
+            <action method="setTemplate"><template>eximbay/blank.phtml</template></action>
+        </reference>
+        <reference name="content">
+            <block type="eximbay/placeform" name="eximbay_placeform" template="eximbay/placeform.phtml" />
+        </reference>
+    </eximbay_processing_placeform>
+</layout>

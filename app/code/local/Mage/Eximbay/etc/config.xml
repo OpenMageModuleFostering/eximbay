@@ -1,0 +1,161 @@
+<?xml version="1.0"?> 
+<!--
+/**
+ * Eximbay, Online Payment Module
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the GNU General Public License (GPL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/GPL-3.0 or http://www.gnu.org/copyleft/gpl.html
+ * 
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Eximbay module to newer
+ * versions in the future. If you wish to customize Eximbay module for your
+ * needs please refer to https://www.eximbay.com for more information.
+ *
+ * @category    Mage
+ * @package     Mage_Eximbay
+ * @copyright   Copyright (c) 2013 KRPartners Co.,Ltd (https://www.eximbay.com)
+ * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
+ */
+-->  
+<config> 
+	<global> 
+	<!-- declare model group for new module -->
+		<models> 
+		<!-- model group alias to be used in Mage::getModel('newmodule/...') -->
+			<eximbay> 
+			<!-- base class name for the model group -->
+				<class>Mage_Eximbay_Model</class> 
+			</eximbay> 
+		</models> 
+		<helpers>
+            <eximbay>
+                <class>Mage_Eximbay_Helper</class>
+            </eximbay>
+        </helpers>
+        
+	<!-- declare resource setup for new module -->
+		<resources> <!-- resource identifier -->
+			<eximbay_setup> 
+				<!-- specify that this resource is a setup resource and used for upgrades -->
+				<setup> 
+				<!-- which module to look for install/upgrade files in -->
+					<module>Mage_Eximbay</module> 
+				</setup> 
+				<!-- specify database connection for this resource -->
+				<connection> 
+				<!-- do not create new connection, use predefined core setup connection -->
+					<use>core_setup</use> 
+				</connection> 
+			</eximbay_setup> 
+			<eximbay_write> 
+				<use>core_write</use> 
+			</eximbay_write> 
+			<eximbay_read> 
+				<use>core_read</use> 
+			</eximbay_read> 
+		</resources>
+	 	<blocks>
+            <eximbay><class>Mage_Eximbay_Block</class></eximbay>
+        </blocks>
+         <payment>
+            <groups>
+                <xbay>Eximbay</xbay>
+            </groups>
+        </payment>
+	</global>   
+	
+	<frontend>
+        <secure_url>
+            <eximbay_processing>/eximbay/processing</eximbay_processing>
+        </secure_url>
+        <routers>
+            <eximbay>
+                <use>standard</use>
+                <args>
+                    <module>Mage_Eximbay</module>
+                    <frontName>eximbay</frontName>
+                </args>
+            </eximbay>
+        </routers>
+        <layout>
+            <updates>
+                <eximbay>
+                    <file>eximbay.xml</file>
+                </eximbay>
+            </updates>
+        </layout>
+    </frontend>
+	<admin>
+         <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <eximbay after="Mage_Adminhtml">Mage_Eximbay</eximbay>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+	<adminhtml>
+        <translate>
+            <modules>
+                <Mage_Eximbay>
+                    <files>
+                        <default>Mage_Eximbay.csv</default>
+                    </files>
+                </Mage_Eximbay>
+            </modules>
+        </translate>
+        <layout>
+            <updates>
+                <eximbay>
+                    <file>eximbay.xml</file>
+                </eximbay>
+            </updates>
+        </layout>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <eximbay translate="title" module="eximbay">
+                                            <title>Eximbay Settings</title>
+                                        </eximbay>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+    </adminhtml>
+	
+	<!-- declare default configuration values for this module -->
+	<default> 
+	<!-- 'payment' configuration section (tab) -->
+		<payment> 
+		<!-- 'newmodule' configuration group (fieldset) -->
+			
+			<eximbay_acc>
+                <group>xbay</group>
+                <active>1</active>
+                <model>eximbay/acc</model>
+                <title>Eximbay</title>
+                <allowspecific>0</allowspecific>
+            </eximbay_acc>
+		</payment>
+		<eximbay>
+            <settings>
+                <activationstatus>0</activationstatus>
+            </settings>
+        </eximbay> 
+	</default> 
+</config>

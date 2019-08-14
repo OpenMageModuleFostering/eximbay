@@ -1,0 +1,38 @@
+<?php
+/**
+ * Eximbay, Online Payment Module
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the GNU General Public License (GPL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/GPL-3.0 or http://www.gnu.org/copyleft/gpl.html
+ * 
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Eximbay module to newer
+ * versions in the future. If you wish to customize Eximbay module for your
+ * needs please refer to https://www.eximbay.com for more information.
+ *
+ * @category    Mage
+ * @package     Mage_Eximbay
+ * @copyright   Copyright (c) 2013 KRPartners Co.,Ltd (https://www.eximbay.com)
+ * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
+ */
+?>
+
+<script type="text/javascript">
+//<![CDATA[
+    function initEximbay() {
+        if (!document.getElementById("eximbay_settings_activationstatus")) {
+            // Don't perform for website and store view
+            return;
+        }
+        document.getElementById("eximbay_settings_activationstatus").style.display = "none";
+        $('eximbay_settings_activationstatus').up().insert('<button type="button" id="eximbay_multifuncbutton" onclick="eximbay.button()" style="display: none; margin-top: 1em;"><span id="eximbay_multifuncbutton_label" style="display:block; margin-top:1em;"></span></button>');
+        $('eximbay_settings_activationstatus').up().insert('<span id="eximbay_inf_div" style="display:block; margin-top:1em;"></span>');
+        $('eximbay_settings_activationstatus').up().insert('<input id="eximbay_settings_merchant_id_hidden" type="hidden"/>');
+        eximbay = new Eximbay('<?php echo $this->getSkinUrl('images/eximbay/banner.jpg'); ?>', '<?php echo $this->getUrl('*/eximbay/activateemail'); ?>', '<?php echo $this->getUrl('*/eximbay/checksecret'); ?>', '<?php echo $this->getUrl('*/eximbay/checkemail');?>');
+    }
+//]]>
+</script>

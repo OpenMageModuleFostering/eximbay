@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+<?php
 /**
  * Eximbay, Online Payment Module
  *
@@ -20,21 +19,17 @@
  * @copyright   Copyright (c) 2013 KRPartners Co.,Ltd (https://www.eximbay.com)
  * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
  */
--->
-<config> 
-	<modules> 
-	<!-- declare Mage_NewModule module -->
-		<Mage_Eximbay> 
-		<!-- this is an active module -->
-			<active>true</active> 
-			<!-- this module will be located in app/code/local code pool -->
-			<codePool>local</codePool> 
-			<!-- specify dependencies for correct module loading order -->
-			<depends> 
-				<Mage_Payment /> 
-			</depends> 
-			<!-- declare module's version information for database updates -->
-			<version>0.1.0</version> 
-		</Mage_Eximbay> 
-	</modules> 
-</config>
+?>
+<div class="page-head">
+    <h3><?php echo Mage::helper('eximbay')->__('Please pay your order now') ?></h3>
+</div>
+<table style="width:100%;">
+    <tr>
+        <td style="width:75%">
+            <iframe style="width:100%; height:600px;" src="<?php echo Mage::getUrl('eximbay/processing/placeform') ?>"></iframe>
+        </td>
+        <td style="text-align:center;">
+            <img src="<?php echo $this->getEximbayLogoSrc() ?>" title="<?php echo Mage::helper('eximbay')->__('Powered by Eximbay') ?>" alt="<?php echo Mage::helper('eximbay')->__('Powered by Eximbay') ?>" />
+        </td>
+    </tr>
+</table>

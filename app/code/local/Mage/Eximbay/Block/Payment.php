@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+<?php
 /**
  * Eximbay, Online Payment Module
  *
@@ -20,21 +19,19 @@
  * @copyright   Copyright (c) 2013 KRPartners Co.,Ltd (https://www.eximbay.com)
  * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
  */
--->
-<config> 
-	<modules> 
-	<!-- declare Mage_NewModule module -->
-		<Mage_Eximbay> 
-		<!-- this is an active module -->
-			<active>true</active> 
-			<!-- this module will be located in app/code/local code pool -->
-			<codePool>local</codePool> 
-			<!-- specify dependencies for correct module loading order -->
-			<depends> 
-				<Mage_Payment /> 
-			</depends> 
-			<!-- declare module's version information for database updates -->
-			<version>0.1.0</version> 
-		</Mage_Eximbay> 
-	</modules> 
-</config>
+class Mage_Eximbay_Block_Payment extends Mage_Core_Block_Template
+{
+    /**
+     * Return Payment logo src
+     *
+     * @return string
+     */
+    public function getEximbayLogoSrc()
+    {
+        $locale = Mage::getModel('eximbay/acc')->getLocale();
+        $logoFilename = Mage::getDesign()
+            ->getFilename('images' . DS . 'eximbay' . DS . 'banner_120_' . $locale . '.gif', array('_type' => 'skin'));
+
+        return $this->getSkinUrl('images/eximbay/banner_120_int.gif');
+    }
+}
