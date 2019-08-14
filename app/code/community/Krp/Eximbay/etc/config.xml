@@ -181,13 +181,21 @@
 				<order_status>processing</order_status>
 				<sort_order>5</sort_order>
 			</eximbay_tnp>
+			<eximbay_wct>
+				<group>xbay</group>
+				<active>0</active>
+				<model>eximbay/wct</model>
+				<title>WeChat</title>
+				<order_status>processing</order_status>
+				<sort_order>6</sort_order>
+			</eximbay_wct>
 			<eximbay_nnb>
 				<group>xbay</group>
 				<active>0</active>
 				<model>eximbay/nnb</model>
 				<title>99Bill</title>
 				<order_status>processing</order_status>
-				<sort_order>6</sort_order>
+				<sort_order>7</sort_order>
 			</eximbay_nnb>
 			<eximbay_ecn>
 				<group>xbay</group>
@@ -195,7 +203,7 @@
 				<model>eximbay/ecn</model>
 				<title>Cash Payment (Japan)</title>
 				<order_status>processing</order_status>
-				<sort_order>7</sort_order>
+				<sort_order>8</sort_order>
 			</eximbay_ecn>
 			<eximbay_all>
 				<group>xbay</group>
@@ -203,7 +211,7 @@
 				<model>eximbay/all</model>
 				<title>All-in Payment</title>
 				<order_status>processing</order_status>
-				<sort_order>8</sort_order>
+				<sort_order>9</sort_order>
 			</eximbay_all>
 		</payment>
 		<eximbay>
