@@ -221,7 +221,7 @@ abstract class Mage_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abs
             'amt'                	=> $amt,
             'cur'              		=> $cur,
             'shop'					=> Mage::app()->getStore()->getName(),//Mage::app()->getWebsite()->getName(),//Mage::app()->getStore()->getGroup()->getName(),//Mage::getStoreConfig('payment/eximbay_acc/title'),
-            'buyer'             	=> $billing->getFirstname() . $billing->getLastname(),  
+            'buyer'             	=> $billing->getFirstname() . ' ' . $billing->getLastname(),  
             'tel'          			=> $billing->getTelephone(),
 			'param1'          		=> '',
 			'param2'          		=> '',
@@ -235,7 +235,8 @@ abstract class Mage_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abs
 			'dm_shipTo_phoneNumber'			=> $shipping->getTelephone(),
 			'dm_shipTo_postalCode'			=> $shipping->getPostcode(),
 			'dm_shipTo_state'				=> $shipping->getRegionCode(),
-			'dm_shipTo_street1'				=> $shipping->getStreetFull(),
+			'dm_shipTo_street1'				=> $shipping->getStreet(1),
+			'dm_shipTo_street2'				=> $shipping->getStreet(2),
         );
 		
 		//get item units

@@ -50,8 +50,8 @@
 	     		<table class="buttons-table" id="review-buttons-table" style="width:100%;">
 	     			<tr><td style="text-align:right;">Thank you for your order, please click the button below to pay with Eximbay.</td></tr>
 			        <tr><td style="text-align:left;">
-			        	<button type="submit" title="<?php echo $this->__('Pay via Eximbay') ?>" class="button btn-checkout" onclick="javascript:window.open('<?php echo Mage::getUrl('eximbay/processing/placeform') ?>','payment2','scrollbars=yes,status=no,toolbar=no,resizable=yes,location=no,menu=no,width=800,height=470,top=200,left=300'); this.disabled=true; document.getElementById('eximbay-cancel-link').disabled = true;"><span><span><?php echo $this->__('Pay via Eximbay') ?></span></span></button>
-			        	<p class="f-left"><a href="<?php echo $this->getUrl('eximbay/processing/cancel') ?>" id="eximbay-cancel-link"><?php echo $this->__('Cancel Order') ?></a></p>
+			        	<button type="submit" title="<?php echo $this->__('Pay via Eximbay') ?>" class="button btn-checkout" onclick="javascript:window.open('<?php echo Mage::getUrl('eximbay/processing/placeform') ?>','payment2','scrollbars=yes,status=no,toolbar=no,resizable=yes,location=no,menu=no,width=800,height=470,top=200,left=300'); this.disabled=true; disableCancelLink();"><span><span><?php echo $this->__('Pay via Eximbay') ?></span></span></button>
+			        	<p class="f-left"><a id="eximbay-cancel-link" href="<?php echo $this->getUrl('eximbay/processing/cancel') ?>"><?php echo $this->__('Cancel Order') ?></a></p>
 			        	</td>
 			        </tr>
 		    	</table>
@@ -63,3 +63,12 @@
         </td>
  	</tr>
 </table>
+<script type="text/javascript">
+//<![CDATA[
+    function disableCancelLink() {
+    	document.getElementById('eximbay-cancel-link').disabled=true;
+   		document.getElementById('eximbay-cancel-link').removeAttribute('href');
+   		document.getElementById('eximbay-cancel-link').style.color = "grey";
+	}
+//]]>
+</script>
