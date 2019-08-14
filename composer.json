@@ -1,0 +1,16 @@
+{
+    "name": "OpenMageModuleFostering/Eximbay",
+    "type": "magento-module",
+    "license": "GNU-General-Public-License-(GPL)",
+    "homepage": "",
+    "description": "Eximbay payment method",
+    "authors": [
+    {
+        "name": "Uuganbayar Choijiljav",
+        "email": "prokod@kr.net"
+    }
+],
+    "suggest": {
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}
