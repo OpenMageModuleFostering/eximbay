@@ -148,7 +148,7 @@
                 <group>xbay</group>
                 <active>1</active>
                 <model>eximbay/acc</model>
-                <title>Eximbay</title>
+                <title>Credit Card (Eximbay)</title>
                 <allowspecific>0</allowspecific>
             </eximbay_acc>
 		</payment>
