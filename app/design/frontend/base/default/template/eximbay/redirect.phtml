@@ -24,11 +24,13 @@
 <head>
 <script type="text/javascript">
 //<![CDATA[
-<?php if ($this->getEximbayDisplayType()): ?>
-parent.location.href="<?php echo $this->getRedirectUrl() ?>";
-<?php else: ?>
+<?php if ($this->getEximbayDisplayType() == 'I'): ?>
+	parent.location.href="<?php echo $this->getRedirectUrl() ?>";
+<?php elseif ($this->getEximbayDisplayType() == 'P'): ?>
 	window.opener.location.href="<?php echo $this->getRedirectUrl() ?>";
 	window.self.close();
+<?php elseif ($this->getEximbayDisplayType() == 'R'): ?>
+	window.location.href="<?php echo $this->getRedirectUrl() ?>";
 <?php endif; ?>
 //]]>
 </script>

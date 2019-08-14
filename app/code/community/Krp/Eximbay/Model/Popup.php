@@ -31,7 +31,7 @@ class Krp_Eximbay_Model_Popup
 	public function toOptionArray()
 	{
 		return array(
-            array('value' => 0, 'label'=>Mage::helper('eximbay')->__('Popup')),
+            array('value' => 'P', 'label'=>Mage::helper('eximbay')->__('Popup')),
 		);
 	}
 

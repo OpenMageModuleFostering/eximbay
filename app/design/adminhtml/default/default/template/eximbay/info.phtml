@@ -24,5 +24,5 @@
 <?php if ($this->getInfo()->getLastTransId() == ''): ?>
     <?php echo Mage::helper('eximbay')->__('Payment has not been processed yet.') ?><br />
 <?php else: ?>
-    <?php echo Mage::helper('eximbay')->__('Eximbay Transaction ID: %s', $this->escapeHtml($this->getInfo()->getLastTransId())) ?><br />
+    <?php echo Mage::helper('eximbay')->__('Payment was processed.') ?><br />
 <?php endif; ?>

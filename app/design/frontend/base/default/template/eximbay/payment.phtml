@@ -26,7 +26,7 @@
 
 <table style="width:100%; border:1;">
  	<tr>
- 		<?php if ($this->getEximbayDisplayType()): ?>
+ 		<?php if ($this->getEximbayDisplayType() == 'I'): ?>
  		<td style="width:800px">
             <iframe style="width:100%; height:600px; border:0;" src="<?php echo Mage::getUrl('eximbay/processing/placeform') ?>"></iframe>
  		</td>
@@ -40,17 +40,26 @@
         </td>
  	</tr>
 </table>
-<?php if (!$this->getEximbayDisplayType()): ?>
+
 <script type="text/javascript">
 //<![CDATA[      
-    window.onload=function()
-	{
+   	<?php if ($this->getEximbayDisplayType() == 'P'): ?>
+   		window.onload = openPopup;
+    <?php elseif ($this->getEximbayDisplayType() == 'R'): ?>
+    	window.onload = doRedirect;
+    <?php endif; ?>
+
+    function openPopup() {
     	var popup = window.open('<?php echo Mage::getUrl('eximbay/processing/placeform') ?>','payment2','scrollbars=yes,status=no,toolbar=no,resizable=yes,location=no,menu=no,width=425,height=550,top=200,left=300');
 		//check if popup is blocked
     	if(!popup || popup.closed || typeof popup.closed=='undefined'){
 			alert("<?php echo Mage::helper('eximbay')->__('Turn off pop-up blocker and try again please.') ?>");
         }
-	}
+    }
+
+    function doRedirect() {
+    	window.location.href="<?php echo Mage::getUrl('eximbay/processing/placeform') ?>";
+    }
+    
 //]]>
 </script>
-<?php endif; ?>

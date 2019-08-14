@@ -82,7 +82,7 @@ class Krp_Eximbay_Model_Event
             $params = $this->_validateEventData();
             $msg = '';
             if($params['rescode'] == '0000') {   //ok 
-            	$msg = Mage::helper('eximbay')->__('The amount has been authorized and captured by EXIMBAY.');
+            	$msg = Mage::helper('eximbay')->__('The amount was authorized and captured by EXIMBAY.');
                 $this->_processSale($msg);
                 $msg = Mage::helper('eximbay')->__('rescode=0000&resmsg=success');
             }else{    							 //fail
@@ -192,14 +192,6 @@ class Krp_Eximbay_Model_Event
 	        $transactionSave = Mage::getModel('core/resource_transaction')->addObject($invoice)->addObject($invoice->getOrder());
 	        $transactionSave->save();
 	        
-	        
-	        /*if (!$this->_order->canInvoice()) {
-	        	return;
-	        }
-	        $invoice = $this->_order->prepareInvoice();
-	        $invoice->register()->capture();
-	        $this->_order->addRelatedObject($invoice);*/
-	        
         } catch (Mage_Core_Exception $e) {
         	return $e->getMessage();
         } catch(Exception $e) {
@@ -225,7 +217,7 @@ class Krp_Eximbay_Model_Event
         }
 
         // check order ID
-        if (empty($params['ref'])) {		// || ($fullCheck == false && $this->_getCheckout()->getEximbayRealOrderId() != $params['ref'])
+        if (empty($params['ref'])) {
         	Mage::log('Exception - Missing or invalid order ID.', null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
         	Mage::throwException('Missing or invalid order ID.');
         }
@@ -251,8 +243,8 @@ class Krp_Eximbay_Model_Event
             
             // check transaction signature
             if (empty($params['fgkey'])) {
-            	Mage::log('Exception - Invalid transaction signature.', null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
-            	Mage::throwException('Invalid transaction signature.');
+            	Mage::log('Exception - Missing or invalid transaction signature.', null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
+            	Mage::throwException('Missing or invalid transaction signature.');
             }
             
             if($params['rescode'] == '0000'){
@@ -270,7 +262,6 @@ class Krp_Eximbay_Model_Event
 				}
 				
             	$linkBuf = $secretKey. "?mid=" .$params['mid'] ."&ref=" .$params['ref'] ."&cur=" .$params['cur'] ."&amt=" .$params['amt'] ."&rescode=" .$params['rescode'] .$suffix;
-            	//$newFgkey = md5($linkBuf);
             	$newFgkey = hash("sha256", $linkBuf);
             	
             	Mage::log($linkBuf.'/'.$newFgkey, null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
@@ -281,21 +272,6 @@ class Krp_Eximbay_Model_Event
             	}
             }
             
-            // check transaction amount if currency matches
-            /*if ($this->_order->getOrderCurrencyCode() == $params['cur']) {
-            	if($this->_order->getOrderCurrencyCode() == 'KRW' || $this->_order->getOrderCurrencyCode() == 'JPY' || $this->_order->getOrderCurrencyCode() == 'VND')
-            	{
-            		if(round($this->_order->getGrandTotal(), 0, PHP_ROUND_HALF_UP) != $params['amt']){
-            			Mage::log('Exception - Transaction amount does not match.', null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
-            			Mage::throwException('Transaction amount does not match.');
-            		}
-            	}else{
-	                if(round($this->_order->getGrandTotal(), 2) != $params['amt']) {
-	                	Mage::log('Exception - Transaction amount does not match.', null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
-	                	Mage::throwException('Transaction amount does not match.');
-	                }
-            	}
-            }*/
         }
         return $params;
     }

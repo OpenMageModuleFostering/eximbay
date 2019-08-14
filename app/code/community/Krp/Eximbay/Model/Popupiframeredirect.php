@@ -20,7 +20,7 @@
  * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
  */
 
-class Krp_Eximbay_Model_Version
+class Krp_Eximbay_Model_Popupiframeredirect
 {
 
 	/**
@@ -31,9 +31,9 @@ class Krp_Eximbay_Model_Version
 	public function toOptionArray()
 	{
 		return array(
-			//array('value' => 170, 'label'=>Mage::helper('eximbay')->__('170')),
-			//array('value' => 180, 'label'=>Mage::helper('eximbay')->__('180')),
-            array('value' => 200, 'label'=>Mage::helper('eximbay')->__('200')),
+			array('value' => 'P', 'label'=>Mage::helper('eximbay')->__('Popup')),
+			array('value' => 'I', 'label'=>Mage::helper('eximbay')->__('IFrame')),
+		 	array('value' => 'R', 'label'=>Mage::helper('eximbay')->__('Redirect')),
 		);
 	}
 

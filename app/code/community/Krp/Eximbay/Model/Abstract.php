@@ -314,23 +314,11 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
      */
     public function getUrl()
     {
-		if($this->getAPIVersion() == '170' || $this->getAPIVersion() == '180'){
-			if($this->isTestMode()){
-				if($this->isMobile())
-					return 'https://www.test.eximbay.com/web/mpayment/payment_real.do';
-				return 'https://www.test.eximbay.com/web/payment2.0/payment_real.do';
-			}else{
-				if($this->isMobile())
-					return 'https://www.eximbay.com/web/mpayment/payment_real.do';
-				return 'https://www.eximbay.com/web/payment2.0/payment_real.do';
-			}
+		if($this->isTestMode()){
+			return 'https://secureapi.test.eximbay.com/Gateway/BasicProcessor.krp';
 		}else{
-			if($this->isTestMode()){
-				return 'https://secureapi.test.eximbay.com/Gateway/BasicProcessor.krp';
-			}else{
-				return 'https://secureapi.eximbay.com/Gateway/BasicProcessor.krp';
-			}
-    	}
+			return 'https://secureapi.eximbay.com/Gateway/BasicProcessor.krp';
+		}
     }
     
     /**
@@ -403,23 +391,9 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
     public function getDisplayType()
     {
     	$diplay_mode = Mage::getStoreConfig('payment/'.$this->getPaymentMethodCode().'/dtype');
-    	if($diplay_mode){
-    		return 'I';
-    	}else{
-    		return 'P';
-    	}
+    	return $diplay_mode;
     }
     
-    /**
-     * Return API version
-     *
-     * @return string
-     */
-    public function getAPIVersion()
-    {
-    	$version = Mage::getStoreConfig('payment/'.$this->getPaymentMethodCode().'/ver');
-    	return $version;
-    }
     
     /**
      * checks if Korean Local Payment is chosen. 
@@ -462,7 +436,6 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
         $secretKey = Mage::getStoreConfig('payment/'.$this->getPaymentMethodCode().'/secret_key');
         $mid = Mage::getStoreConfig('payment/'.$this->getPaymentMethodCode().'/mid');
 		$ref = $order_id;
-		//$cur = Mage::getStoreConfig('payment/eximbay_acc/currency');
 		$displayType = $this->getDisplayType();
 		$cur = $this->getOrder()->getOrderCurrencyCode();
 		if($cur == 'KRW' || $cur == 'JPY' || $cur == 'VND')
@@ -471,100 +444,82 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
 		}
 		$linkBuf = $secretKey. "?mid=" . $mid ."&ref=" . $ref ."&cur=" .$cur ."&amt=" .$amt;
 		
-		//$fgkey = md5($linkBuf);
 		$fgkey = hash("sha256", $linkBuf);
 
-		$txntype = 'SALE';
-		$ostype = '';
+		$ostype = 'P';
 		$issuercountry = '';
-		if($this->getAPIVersion() == '200'){
-			$txntype = 'PAYMENT';
-			$ostype = 'P';
-			if($this->isMobile()){
-				$ostype = 'M';
-			}
-			if($this->isKoreanLocalPayment()){
-				$issuercountry = 'KR';
-			}
+		if($this->isMobile()){
+			$ostype = 'M';
 		}
+		if($this->isKoreanLocalPayment()){
+			$issuercountry = 'KR';
+		}
+
 		
 		$params = array(
-			'ver'      				=> $this->getAPIVersion(),
+			'ver'      				=> '210',
             'mid'      				=> $mid,
-			'txntype'      			=> $txntype,
+			'txntype'      			=> 'PAYMENT',
 			'displaytype'      		=> $displayType,
 			'charset'	      		=> 'UTF-8',
             'ref'             		=> $ref,
             'email'          		=> $email,
-            'returnurl'             => Mage::getUrl('eximbay/processing/success'),  //, array('transaction_id' => $order_id)
+            'returnurl'             => Mage::getUrl('eximbay/processing/success'), 
 			'statusurl'             => Mage::getUrl('eximbay/processing/status'),
             'fgkey'            		=> $fgkey,
             'lang'              	=> $this->getLocale(),
             'amt'                	=> $amt,
             'cur'              		=> $cur,
-            'shop'					=> Mage::app()->getStore()->getName(),//Mage::app()->getWebsite()->getName(),//Mage::app()->getStore()->getGroup()->getName(),//Mage::getStoreConfig('payment/eximbay_acc/title'),
+            'shop'					=> Mage::app()->getStore()->getName(),
             'buyer'             	=> $billing->getFirstname() . ' ' . $billing->getLastname(),  
             'tel'          			=> $billing->getTelephone(),
-			'param1'          		=> '',
-			'param2'          		=> '',
-			'param3'          		=> '',
-			'title1'          		=> '',
-			'title2'          		=> '',
-			'title3'          		=> '',
-			'title4'          		=> '',
-			'visitorid'				=> '',
-			'partnercode'			=> '',
+			//'param1'          		=> '',
+			//'param2'          		=> '',
+			//'param3'          		=> '',
+			//'title1'          		=> '',
+			//'title2'          		=> '',
+			//'title3'          		=> '',
+			//'title4'          		=> '',
+			//'visitorid'				=> '',
+			//'partnercode'				=> '',
 			'autoclose'				=> 'Y',
 			'directToReturn'		=> 'N',
 			'ostype'				=> $ostype,
 			'issuercountry'    		=> $issuercountry,
-			'paymethod'       				=> $this->_paymentMethod,
-			'dm_billTo_city'				=> $billing->getCity(),
-			'dm_billTo_country'				=> $billing->getCountry_id(),
-			'dm_billTo_firstName'			=> $billing->getFirstname(),
-			'dm_billTo_lastName'			=> $billing->getLastname(),
-			'dm_billTo_phoneNumber'			=> $billing->getTelephone(),
-			'dm_billTo_postalCode'			=> $billing->getPostcode(),
-			'dm_billTo_state'				=> $billing->getRegionCode(),
-			'dm_billTo_street1'				=> $billing->getStreet(1),
-			'dm_billTo_street2'				=> $billing->getStreet(2),
-			'dm_shipTo_city'				=> $shipping->getCity(),
-			'dm_shipTo_country'				=> $shipping->getCountry_id(),
-			'dm_shipTo_firstName'			=> $shipping->getFirstname(),
-			'dm_shipTo_lastName'			=> $shipping->getLastname(),
-			'dm_shipTo_phoneNumber'			=> $shipping->getTelephone(),
-			'dm_shipTo_postalCode'			=> $shipping->getPostcode(),
-			'dm_shipTo_state'				=> $shipping->getRegionCode(),
-			'dm_shipTo_street1'				=> $shipping->getStreet(1),
-			'dm_shipTo_street2'				=> $shipping->getStreet(2),
+			'paymethod'       			=> $this->_paymentMethod,
+			'billTo_city'				=> $billing->getCity(),
+			'billTo_country'			=> $billing->getCountry_id(),
+			'billTo_firstName'			=> $billing->getFirstname(),
+			'billTo_lastName'			=> $billing->getLastname(),
+			'billTo_phoneNumber'		=> $billing->getTelephone(),
+			'billTo_postalCode'			=> $billing->getPostcode(),
+			'billTo_state'				=> $billing->getRegionCode(),
+			'billTo_street1'			=> $billing->getStreet(1),
+			'billTo_street2'			=> $billing->getStreet(2),
+			'shipTo_city'				=> $shipping->getCity(),
+			'shipTo_country'			=> $shipping->getCountry_id(),
+			'shipTo_firstName'			=> $shipping->getFirstname(),
+			'shipTo_lastName'			=> $shipping->getLastname(),
+			'shipTo_phoneNumber'		=> $shipping->getTelephone(),
+			'shipTo_postalCode'			=> $shipping->getPostcode(),
+			'shipTo_state'				=> $shipping->getRegionCode(),
+			'shipTo_street1'			=> $shipping->getStreet(1),
+			'shipTo_street2'			=> $shipping->getStreet(2),
         );
 		
 		//get item units
 		$order = Mage::getModel('sales/order')->loadByIncrementId($order_id);
 		$items = $order->getAllVisibleItems();
-		$itemname = '';
 		$itemcount=count($items);
 		$item_loop = 0;
 		if ( $itemcount > 0 ) {
 			foreach ($items as $itemId => $item)
 			{
-				$params['dm_item_'.$item_loop.'_product'] = $item->getName();
-				$params['dm_item_'.$item_loop.'_unitPrice'] = number_format($item->getPrice(), 2, '.', '');		//round($item->getPrice(), 2);
-				$params['dm_item_'.$item_loop.'_quantity'] = $item->getQtyToInvoice();
+				$params['item_'.$item_loop.'_product'] = $item->getName();
+				$params['item_'.$item_loop.'_unitPrice'] = number_format($item->getPrice(), 2, '.', '');
+				$params['item_'.$item_loop.'_quantity'] = $item->getQtyToInvoice();
 				
-				//if($item_loop > 0)
-				//	$params['product']  .= '&#13;&#10;';
-				//$params['product']  .= $item->getName();
-				
-				if($item_loop == 0)
-					$params['product'] = $item->getName();
-					
 				$item_loop++;
-			}
-			
-			if($itemcount > 1){
-				$itemcnt = $itemcount - 1;
-				$params['product'] .= " ... and " . $itemcnt . " more";
 			}
 		}
 		

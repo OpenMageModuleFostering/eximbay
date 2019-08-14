@@ -24,7 +24,7 @@
 <config>
 	<modules>
         <Krp_Eximbay>
-            <version>2.0.0</version>
+            <version>3.0.0</version>
         </Krp_Eximbay>
     </modules> 
 	<global> 
