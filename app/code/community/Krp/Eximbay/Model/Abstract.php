@@ -252,6 +252,17 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
     }
     
     /**
+     * checks if Korean Local Payment is chosen. 
+     *
+     * @return string
+     */
+    public function isKoreanLocalPayment()
+    {
+    	$localpayment = Mage::getStoreConfig('payment/'.$this->getPaymentMethodCode().'/localpayment');
+    	return $localpayment;
+    }
+    
+    /**
      * Return working mode (test or production)
      *
      * @return string
@@ -295,11 +306,15 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
 
 		$txntype = 'SALE';
 		$ostype = '';
+		$issuercountry = '';
 		if($this->getAPIVersion() == '200'){
 			$txntype = 'PAYMENT';
 			$ostype = 'P';
 			if($this->isMobile()){
 				$ostype = 'M';
+			}
+			if($this->isKoreanLocalPayment()){
+				$issuercountry = 'KR';
 			}
 		}
 		
@@ -332,6 +347,7 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
 			'autoclose'				=> 'Y',
 			'directToReturn'		=> 'N',
 			'ostype'				=> $ostype,
+			'issuercountry'    		=> $issuercountry,
 			'paymethod'       				=> $this->_paymentMethod,
 			'dm_billTo_city'				=> $billing->getCity(),
 			'dm_billTo_country'				=> $billing->getCountry_id(),

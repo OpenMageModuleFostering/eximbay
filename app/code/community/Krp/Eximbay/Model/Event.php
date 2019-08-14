@@ -271,7 +271,7 @@ class Krp_Eximbay_Model_Event
             }
             
             // check transaction amount if currency matches
-            if ($this->_order->getOrderCurrencyCode() == $params['cur']) {
+            /*if ($this->_order->getOrderCurrencyCode() == $params['cur']) {
             	if($this->_order->getOrderCurrencyCode() == 'KRW' || $this->_order->getOrderCurrencyCode() == 'JPY' || $this->_order->getOrderCurrencyCode() == 'VND')
             	{
             		if(round($this->_order->getGrandTotal(), 0, PHP_ROUND_HALF_UP) != $params['amt']){
@@ -284,7 +284,7 @@ class Krp_Eximbay_Model_Event
 	                	Mage::throwException('Transaction amount does not match.');
 	                }
             	}
-            }
+            }*/
         }
         return $params;
     }

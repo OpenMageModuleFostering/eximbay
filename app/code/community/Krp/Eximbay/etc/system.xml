@@ -109,13 +109,24 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                     </ver>
+                    <localpayment translate="label">
+                            <label>Korean Local Payment</label>
+                            <comment>If you prefer Korean Local Card Payment over Global Payment, choose 'Yes'. This option is only applicable if API version is 200.</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_acc/localpayment</config_path>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>8</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </localpayment>
                     <dtype translate="label">
                             <label>Payment Page Type</label>
                             <comment>Choose your payment page type, IFrame or Popup.</comment>
                             <frontend_type>select</frontend_type>
                             <config_path>payment/eximbay_acc/dtype</config_path>
                             <source_model>eximbay/popupiframe</source_model>
-                            <sort_order>8</sort_order>
+                            <sort_order>9</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
@@ -124,7 +135,7 @@
                             <label>Accepted Currency</label>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_currency</source_model>
-                            <sort_order>8</sort_order>
+                            <sort_order>10</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
@@ -133,7 +144,7 @@
                             <label>Credit Card Types</label>
                             <frontend_type>multiselect</frontend_type>
                             <source_model>paygate/authorizenet_source_cctype</source_model>
-                            <sort_order>9</sort_order>
+                            <sort_order>11</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
