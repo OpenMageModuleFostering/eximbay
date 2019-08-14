@@ -195,6 +195,7 @@ abstract class Mage_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abs
             'mid'      				=> $mid,
 			'txntype'      			=> 'SALE',
 			'displaytype'      		=> 'I',
+			'charset'	      		=> 'UTF-8',
             'secretkey'             => $secretKey,
             'ref'             		=> $ref,
             'email'          		=> $email,
