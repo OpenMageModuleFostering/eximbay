@@ -73,11 +73,11 @@ abstract class Mage_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abs
     }
 
     /**
-     * Capture payment through Moneybookers api
+     * Capture payment through Eximbay api
      *
      * @param Varien_Object $payment
      * @param decimal $amount
-     * @return Phoenix_Moneybookers_Model_Abstract
+     * @return Mage_Eximbay_Model_Abstract
      */
     public function capture(Varien_Object $payment, $amount)
     {
@@ -92,7 +92,7 @@ abstract class Mage_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abs
      * Cancel payment
      *
      * @param Varien_Object $payment
-     * @return Phoenix_Moneybookers_Model_Abstract
+     * @return Mage_Eximbay_Model_Abstract
      */
     public function cancel(Varien_Object $payment)
     {
@@ -110,7 +110,7 @@ abstract class Mage_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abs
      */
     public function getUrl()
     {
-		$test_mode = Mage::getStoreConfig('payment/eximbay/test');
+		$test_mode = Mage::getStoreConfig('payment/eximbay_acc/test');
 		if($test_mode){
 			return 'http://www.test2.eximbay.com/web/payment2.0/payment_real.do';
 		}else{
@@ -157,6 +157,21 @@ abstract class Mage_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abs
     }
 
     /**
+     * Return display type of payment method
+     *
+     * @return string
+     */
+    public function getDisplayType()
+    {
+    	$diplay_mode = Mage::getStoreConfig('payment/eximbay_acc/dtype');
+    	if($diplay_mode){
+    		return 'I';
+    	}else{
+    		return 'P';
+    	}
+    }
+    
+    /**
      * prepare params array to send it to gateway page via POST
      *
      * @return array
@@ -172,12 +187,13 @@ abstract class Mage_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abs
             $email = $this->getOrder()->getCustomerEmail();
         }
         $amt = round($this->getOrder()->getGrandTotal(), 2);
-		$enc_secretKey = Mage::getStoreConfig('payment/eximbay/secret_key');
-        $enc_mid = Mage::getStoreConfig('payment/eximbay/mid');		
+		$enc_secretKey = Mage::getStoreConfig('payment/eximbay_acc/secret_key');
+        $enc_mid = Mage::getStoreConfig('payment/eximbay_acc/mid');		
 		$secretKey = Mage::helper('core')->decrypt($enc_secretKey);
         $mid = Mage::helper('core')->decrypt($enc_mid);
 		$ref = $order_id;
-		//$cur = Mage::getStoreConfig('payment/eximbay/currency');
+		//$cur = Mage::getStoreConfig('payment/eximbay_acc/currency');
+		$displayType = $this->getDisplayType();
 		$cur = $this->getOrder()->getOrderCurrencyCode();
 		if($cur == 'KRW' || $cur == 'JPY' || $cur == 'VND')
 		{
@@ -194,27 +210,24 @@ abstract class Mage_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abs
 			'ver'      				=> '170',
             'mid'      				=> $mid,
 			'txntype'      			=> 'SALE',
-			'displaytype'      		=> 'I',
+			'displaytype'      		=> $displayType,
 			'charset'	      		=> 'UTF-8',
-            'secretkey'             => $secretKey,
             'ref'             		=> $ref,
             'email'          		=> $email,
-            'transid'        		=> $order_id,
-            'returnurl'             => Mage::getUrl('eximbay/processing/success', array('transid' => $order_id)),
+            'returnurl'             => Mage::getUrl('eximbay/processing/success'),  //, array('transaction_id' => $order_id)
+			'statusurl'             => Mage::getUrl('eximbay/processing/status'),
             'fgkey'            		=> $fgkey,
             'lang'              	=> $this->getLocale(),
             'amt'                	=> $amt,
             'cur'              		=> $cur,
-            'shop'					=> Mage::app()->getStore()->getName(),//Mage::app()->getWebsite()->getName(),//Mage::app()->getStore()->getGroup()->getName(),//Mage::getStoreConfig('payment/eximbay/title'),
+            'shop'					=> Mage::app()->getStore()->getName(),//Mage::app()->getWebsite()->getName(),//Mage::app()->getStore()->getGroup()->getName(),//Mage::getStoreConfig('payment/eximbay_acc/title'),
             'buyer'             	=> $billing->getFirstname() . $billing->getLastname(),  
             'tel'          			=> $billing->getTelephone(),
-            'payment_methods'       => $this->_paymentMethod,
-            'hide_login'            => $this->_hidelogin,
-            'new_window_redirect'   => '1',
-            'rescode'				=> '',
-            'resmsg'				=> '',
-            'authcode'				=> '',
-			'visitorid'				=> '',        
+			'param1'          		=> '',
+			'param2'          		=> '',
+			'param3'          		=> '',
+			'visitorid'				=> '',
+			'directToReturn'		=> 'N',
 			'dm_shipTo_city'				=> $shipping->getCity(),
 			'dm_shipTo_country'				=> $shipping->getCountry_id(),
 			'dm_shipTo_firstName'			=> $shipping->getFirstname(),

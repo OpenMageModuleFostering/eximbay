@@ -25,8 +25,6 @@
  */
 class Mage_Eximbay_Model_Event
 {
-    const EXIMBAY_STATUS_NOT_SUCCESS = -2;
-    const EXIMBAY_STATUS_SUCCESS = 2;
 
     /*
      * @param Mage_Sales_Model_Order
@@ -83,15 +81,12 @@ class Mage_Eximbay_Model_Event
         try {
             $params = $this->_validateEventData();
             $msg = '';
-            switch($params['status']) {
-                case self::EXIMBAY_STATUS_NOT_SUCCESS: //fail or cancel
-                    $msg = Mage::helper('eximbay')->__('Payment was not successful.');
-                    $this->_processCancel($msg);
-                    break;
-                case self::EXIMBAY_STATUS_SUCCESS: //ok
-                    $msg = Mage::helper('eximbay')->__('The amount has been authorized and captured by EXIMBAY.');
-                    $this->_processSale($params['status'], $msg);
-                    break;
+            if($params['rescode'] == '0000') {   //ok 
+            	$msg = Mage::helper('eximbay')->__('The amount has been authorized and captured by EXIMBAY.');
+                $this->_processSale($msg);
+            }else{    							 //fail
+            	$msg = Mage::helper('eximbay')->__('Payment was not successful. Response Code :'.$params['rescode'].' Response Message :'.$params['resmsg']);
+            	$this->_processFail($msg);
             }
             return $msg;
         } catch (Mage_Core_Exception $e) {
@@ -103,13 +98,13 @@ class Mage_Eximbay_Model_Event
     }
 
     /**
-     * Process cancelation or fail
+     * Process cancelation
      */
     public function cancelEvent() {
         try {
             $this->_validateEventData(false);
-            $this->_processCancel('Payment was not successful.');
-            return Mage::helper('eximbay')->__('The order was not completed.');
+            $this->_processCancel('Payment was cancelled by Customer.');
+            return Mage::helper('eximbay')->__('The order has been cancelled.');
         } catch (Mage_Core_Exception $e) {
             return $e->getMessage();
         } catch(Exception $e) {
@@ -136,7 +131,7 @@ class Mage_Eximbay_Model_Event
     protected function _processCancel($msg)
     {
         $this->_order->cancel();
-        $this->_order->addStatusToHistory(Mage_Sales_Model_Order::STATE_PENDING_PAYMENT, $msg);
+        $this->_order->addStatusToHistory(Mage_Sales_Model_Order::STATE_CANCELED, $msg);
         $this->_order->save();
     }
 
@@ -145,22 +140,25 @@ class Mage_Eximbay_Model_Event
      * sends order confirmation to customer
      * @param string $msg Order history message
      */
-    protected function _processSale($status, $msg)
+    protected function _processSale($msg)
     {
-        switch ($status) {
-            case self::EXIMBAY_STATUS_SUCCESS:
-                $this->_createInvoice();
-                $this->_order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true, $msg);
-                $this->_order->setStatus(Mage_Sales_Model_Order::STATE_COMPLETE);
-        		$this->_order->addStatusToHistory(Mage_Sales_Model_Order::STATE_COMPLETE, 'Payment Completed', true);
-                // save transaction ID
-                $this->_order->getPayment()->setLastTransId($this->getEventData('transid'));
-                // send new order email
-                $this->_order->sendNewOrderEmail();
-                $this->_order->setEmailSent(true);
-                break;
-        }
+    	$this->_createInvoice();
+        $this->_order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true, $msg);
+        // save transaction ID
+        $this->_order->getPayment()->setLastTransId($this->getEventData('transid'));
+        // send new order email
+        $this->_order->sendNewOrderEmail();
+        $this->_order->setEmailSent(true);
         $this->_order->save();
+    }
+    
+    /**
+     * Processes payment fail
+     * @param string $msg Order history message
+     */
+    protected function _processFail($msg)
+    {
+    	$this->_order->setState(Mage_Sales_Model_Order::STATE_PENDING_PAYMENT, true, $msg)->save();
     }
 
     /**
@@ -168,12 +166,24 @@ class Mage_Eximbay_Model_Event
      */
     protected function _createInvoice()
     {
-        if (!$this->_order->canInvoice()) {
-            return;
+		try{
+    		if (!$this->_order->canInvoice()) {
+	            Mage::throwException(Mage::helper('eximbay')->__('Cannot create an invoice.'));
+	        }
+	        $invoice = $this->_order->prepareInvoice();
+	        
+	        if (!$invoice->getTotalQty()) {
+	        	Mage::throwException(Mage::helper('eximbay')->__('Cannot create an invoice without products.'));
+	        }
+	        $invoice->setRequestedCaptureCase(Mage_Sales_Model_Order_Invoice::CAPTURE_ONLINE);
+	        $invoice->register();
+	        $transactionSave = Mage::getModel('core/resource_transaction')->addObject($invoice)->addObject($invoice->getOrder());
+	        $transactionSave->save();
+        } catch (Mage_Core_Exception $e) {
+        	return $e->getMessage();
+        } catch(Exception $e) {
+        	Mage::logException($e);
         }
-        $invoice = $this->_order->prepareInvoice();
-        $invoice->register()->capture();
-        $this->_order->addRelatedObject($invoice);
     }
 
     /**
@@ -194,13 +204,13 @@ class Mage_Eximbay_Model_Event
         }
 
         // check order ID
-        if (empty($params['transid'])
-            || ($fullCheck == false && $this->_getCheckout()->getEximbayRealOrderId() != $params['transid'])
+        if (empty($params['ref'])
+            || ($fullCheck == false && $this->_getCheckout()->getEximbayRealOrderId() != $params['ref'])
         ) {
             Mage::throwException('Missing or invalid order ID.');
         }
         // load order for further validation
-        $this->_order = Mage::getModel('sales/order')->loadByIncrementId($params['transid']);
+        $this->_order = Mage::getModel('sales/order')->loadByIncrementId($params['ref']);
         if (!$this->_order->getId()) {
             Mage::throwException('Order not found.');
         }
@@ -212,15 +222,43 @@ class Mage_Eximbay_Model_Event
         // make additional validation
         if ($fullCheck) {
             // check payment status
-            if (empty($params['status'])) {
+            if (empty($params['rescode'])) {
                 Mage::throwException('Unknown payment status.');
+            }
+            
+            // check transaction signature
+            if (empty($params['fgkey'])) {
+            	Mage::throwException('Invalid transaction signature.');
+            }
+            
+            if($params['rescode'] == '0000'){
+            	$enc_secretKey = Mage::getStoreConfig('payment/eximbay_acc/secret_key');	
+				$secretKey = Mage::helper('core')->decrypt($enc_secretKey);
+				if (empty($secretKey)) {
+					Mage::throwException('Secret key is empty.'.$secretKey);
+				}
+				
+            	$linkBuf = $secretKey. "?mid=" .$params['mid'] ."&ref=" .$params['ref'] ."&cur=" .$params['cur'] ."&amt=" .$params['amt'] ."&rescode=" .$params['rescode'] ."&transid=" .$params['transid'];
+            	//$newFgkey = md5($linkBuf);
+            	$newFgkey = hash("sha256", $linkBuf);
+            	
+            	if(strtolower($params['fgkey']) != $newFgkey){
+            		Mage::throwException('Hash is not valid. ');
+            	}
             }
             
             // check transaction amount if currency matches
             if ($this->_order->getOrderCurrencyCode() == $params['cur']) {
-                if (round($this->_order->getGrandTotal(), 2) != $params['amt']) {
-                    Mage::throwException('Transaction amount does not match.');
-                }
+            	if($this->_order->getOrderCurrencyCode() == 'KRW' || $this->_order->getOrderCurrencyCode() == 'JPY' || $this->_order->getOrderCurrencyCode() == 'VND')
+            	{
+            		if(round($this->_order->getGrandTotal(), 0, PHP_ROUND_HALF_UP) != $params['amt']){
+            			Mage::throwException('Transaction amount does not match.');
+            		}
+            	}else{
+	                if(round($this->_order->getGrandTotal(), 2) != $params['amt']) {
+	                    Mage::throwException('Transaction amount does not match.');
+	                }
+            	}
             }
         }
         return $params;

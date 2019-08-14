@@ -20,6 +20,18 @@
  * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
  */
 ?>
-<html><body>
-<script type="text/javascript">parent.location.href="<?php echo $this->getRedirectUrl() ?>";</script>
-</body></html>
+<html>
+<head>
+<script type="text/javascript">
+//<![CDATA[
+<?php if ($this->getEximbayDisplayType()): ?>
+parent.location.href="<?php echo $this->getRedirectUrl() ?>";
+<?php else: ?>
+	window.opener.location.href="<?php echo $this->getRedirectUrl() ?>";
+	window.self.close();
+<?php endif; ?>
+//]]>
+</script>
+</head>
+<body></body>
+</html>

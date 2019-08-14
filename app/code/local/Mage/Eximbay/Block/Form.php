@@ -27,14 +27,14 @@ class Mage_Eximbay_Block_Form extends Mage_Payment_Block_Form
      *
      * @var array
      */
-    protected $_supportedInfoLocales = array('de');
+    protected $_supportedInfoLocales = array('zh', 'en', 'ja', 'ko');
 
     /**
      * Default locale for content URL generation
      *
      * @var string
      */
-    protected $_defaultInfoLocale = 'en';
+    protected $_defaultInfoLocale = 'EN';
 
     /**
      * Constructor. Set template.
@@ -74,8 +74,27 @@ class Mage_Eximbay_Block_Form extends Mage_Payment_Block_Form
     {
         $locale = substr(Mage::app()->getLocale()->getLocaleCode(), 0 ,2);
         if (!in_array($locale, $this->_supportedInfoLocales)) {
-            $locale = $this->_defaultInfoLocale;
+        	if($locale == 'ko'){
+        		return 'KR';
+        	}else if($locale == 'zh'){
+        		return 'CN';
+        	}else if($locale == 'ja'){
+        		return 'JP';
+        	}
         }
+        $locale = $this->_defaultInfoLocale;
+        
         return $locale;
+    }
+    
+    /**
+     * Return info URL for Eximbay payment
+     *
+     * @return string
+     */
+    public function getEximbayInfoUrl()
+    {
+    	$locale = $this->getInfoLocale();
+    	return 'https://www.eximbay.com/index.do?lang_sel=' . $locale;
     }
 }

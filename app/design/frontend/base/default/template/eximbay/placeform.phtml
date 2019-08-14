@@ -38,12 +38,12 @@ document.write(unescape("%3Cscript src='" + pkBaseURL + "mwa_siteno.js' type='te
 <script type="text/javascript">if(set_site_number(111)) set_site_number(111);</script>
 
 <script type="text/javascript">
-
+//<![CDATA[
 function myfunction() {
     var paymentform = document.getElementById('eximbay_place_form');
     document.eximbay.visitorid.value = get_visitorid();
     paymentform.submit();
 }
 window.onload = myfunction;
-
+//]]>
 </script>

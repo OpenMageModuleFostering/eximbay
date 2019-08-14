@@ -53,8 +53,9 @@ class Mage_Eximbay_ProcessingController extends Mage_Core_Controller_Front_Actio
             if (!$order->getId()) {
                 Mage::throwException('No order for processing found');
             }
+
             $order->setState(Mage_Sales_Model_Order::STATE_PENDING_PAYMENT, Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
-                Mage::helper('eximbay')->__('The customer was redirected to eximbay.')
+                Mage::helper('eximbay')->__('The customer was redirected to Eximbay.')
             );
             $order->save();
 
@@ -79,52 +80,56 @@ class Mage_Eximbay_ProcessingController extends Mage_Core_Controller_Front_Actio
         $event = Mage::getModel('eximbay/event')
                  ->setEventData($this->getRequest()->getParams());
         
-        $data = $event->getEventData();
-        
         try {
-        	if ($data['rescode'] == '0000') // payment successful
-        	{
-        		$data["status"] = 2;
-        		$event->setEventData($data);
-        		$message = $event->processStatusEvent();
-	            $quoteId = $event->successEvent();
-	            $this->_getCheckout()->setLastSuccessQuoteId($quoteId);
-	            $this->_redirect('checkout/onepage/success');
-	            return;
-	        }
-	        else // payment not successful
-	        {
-	        	/*
-	        	$data['status'] = -2;
-	        	$event->setEventData($data);
-        		$message = $event->processStatusEvent();
-	        	*/
-	        	$message = $event->cancelEvent();
-
-		        // set quote to active
-		        $session = $this->_getCheckout();
-		        if ($quoteId = $session->getEximbayQuoteId()) {
-		            $quote = Mage::getModel('sales/quote')->load($quoteId);
-		            if ($quote->getId()) {
-		                $quote->setIsActive(true)->save();
-		                $session->setQuoteId($quoteId);
-		            }
-		        }
-		
-		        $session->addError($message);
-		        $this->_redirect('checkout/cart');
-	        }
-	        
+            $quoteId = $event->successEvent();
+            $this->_getCheckout()->setLastSuccessQuoteId($quoteId);
+            $this->_redirect('checkout/onepage/success');
+            return;
         } catch (Mage_Core_Exception $e) {
             $this->_getCheckout()->addError($e->getMessage());
         } catch(Exception $e) {
             Mage::logException($e);
         }
-        
-        $this->getResponse()->setBody($message);
-       $this->_redirect('checkout/cart');
+        $this->_redirect('checkout/cart');
+    }
+    
+    /**
+     * When a customer cancel payment from eximbay.
+     */
+    public function cancelAction()
+    {
+    	$data['ref'] = $this->_getCheckout()->getLastRealOrderId();
+    	$event = Mage::getModel('eximbay/event')
+    			->setEventData($data);
+    	
+    	$message = $event->cancelEvent();
+    	
+    	// set quote to active
+    	$session = $this->_getCheckout();
+    	if ($quoteId = $session->getEximbayQuoteId()) {
+    		$quote = Mage::getModel('sales/quote')->load($quoteId);
+    		if ($quote->getId()) {
+    			$quote->setIsActive(true)->save();
+    			$session->setQuoteId($quoteId);
+    		}
+    	}
+    	
+    	$session->addError($message);
+    	parent::_redirect('checkout/cart');
     }
 
+    /**
+     * Action to which the transaction details will be posted after the payment
+     * process is complete.
+     */
+    public function statusAction()
+    {
+    	$event = Mage::getModel('eximbay/event')
+    			->setEventData($this->getRequest()->getParams());
+    	$message = $event->processStatusEvent();
+    	$this->getResponse()->setBody($message);
+    }
+    
     /**
      * Set redirect into responce. This has to be encapsulated in an JavaScript
      * call to jump out of the iframe.
