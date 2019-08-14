@@ -39,7 +39,7 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
     protected $_canRefund              = true;
     protected $_canRefundInvoicePartial = true;
     protected $_canVoid                = false;
-    protected $_canUseInternal         = false;
+    protected $_canUseInternal         = true;
     protected $_canUseCheckout         = true;
     protected $_canUseForMultishipping = false;
 
@@ -483,7 +483,7 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
 			//'visitorid'				=> '',
 			//'partnercode'				=> '',
 			'autoclose'				=> 'Y',
-			'directToReturn'		=> 'N',
+			//'directToReturn'		=> 'N',
 			'ostype'				=> $ostype,
 			'issuercountry'    		=> $issuercountry,
 			'paymethod'       			=> $this->_paymentMethod,
