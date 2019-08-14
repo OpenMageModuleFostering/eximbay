@@ -146,7 +146,11 @@ class Mage_Eximbay_Model_Event
     	$this->_createInvoice();
         $this->_order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true, $msg);
         // save transaction ID
-        $this->_order->getPayment()->setLastTransId($this->getEventData('transid'));
+        $transid = $this->getEventData('transid');
+        if (empty($transid)){
+        	$transid = $this->getEventData('requestid');
+        }
+        $this->_order->getPayment()->setLastTransId($transid);
         // send new order email
         $this->_order->sendNewOrderEmail();
         $this->_order->setEmailSent(true);
@@ -239,7 +243,12 @@ class Mage_Eximbay_Model_Event
 					Mage::throwException('Secret key is empty.'.$secretKey);
 				}
 				
-            	$linkBuf = $secretKey. "?mid=" .$params['mid'] ."&ref=" .$params['ref'] ."&cur=" .$params['cur'] ."&amt=" .$params['amt'] ."&rescode=" .$params['rescode'] ."&transid=" .$params['transid'];
+				$suffix = "&transid=" .$params['transid'];
+				if (empty($params['transid'])){
+					$suffix = "&requestid=" .$params['requestid'];
+				}
+				
+            	$linkBuf = $secretKey. "?mid=" .$params['mid'] ."&ref=" .$params['ref'] ."&cur=" .$params['cur'] ."&amt=" .$params['amt'] ."&rescode=" .$params['rescode'] .$suffix;
             	//$newFgkey = md5($linkBuf);
             	$newFgkey = hash("sha256", $linkBuf);
             	
