@@ -252,7 +252,7 @@ abstract class Mage_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abs
 				$params['dm_item_'.$item_loop.'_quantity'] = $item->getQtyToInvoice();
 				
 				if($item_loop > 0)
-					$params['product']  .= '<br>';
+					$params['product']  .= '&#13;&#10;';
 				$params['product']  .= $item->getName();
 
 				$item_loop++;
