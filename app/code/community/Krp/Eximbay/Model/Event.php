@@ -146,14 +146,16 @@ class Krp_Eximbay_Model_Event
      */
     protected function _processSale($msg)
     {
+    	// save transaction ID
+    	$transid = $this->getEventData('transid');
+    	if (empty($transid)){
+    		$transid = $this->getEventData('requestid');
+    	}
+    	$this->_order->getPayment()->setLastTransId($transid);
+    	
     	$this->_createInvoice();
         $this->_order->setState(Mage_Sales_Model_Order::STATE_PROCESSING, true, $msg);
-        // save transaction ID
-        $transid = $this->getEventData('transid');
-        if (empty($transid)){
-        	$transid = $this->getEventData('requestid');
-        }
-        $this->_order->getPayment()->setLastTransId($transid);
+        
         // send new order email
         $this->_order->sendNewOrderEmail();
         $this->_order->setEmailSent(true);
@@ -189,6 +191,15 @@ class Krp_Eximbay_Model_Event
 	        $invoice->register();
 	        $transactionSave = Mage::getModel('core/resource_transaction')->addObject($invoice)->addObject($invoice->getOrder());
 	        $transactionSave->save();
+	        
+	        
+	        /*if (!$this->_order->canInvoice()) {
+	        	return;
+	        }
+	        $invoice = $this->_order->prepareInvoice();
+	        $invoice->register()->capture();
+	        $this->_order->addRelatedObject($invoice);*/
+	        
         } catch (Mage_Core_Exception $e) {
         	return $e->getMessage();
         } catch(Exception $e) {

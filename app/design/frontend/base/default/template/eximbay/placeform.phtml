@@ -35,17 +35,9 @@
 </form>
 
 <script type="text/javascript">
-var pkBaseURL = (("https:" == document.location.protocol) ? "https://www.4d-secure.com:15000/" : "http://www.4d-secure.com/");
-document.write(unescape("%3Cscript src='" + pkBaseURL + "mwa_siteno.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">init_module();</script>
-<script type="text/javascript">if(set_site_number(111)) set_site_number(111);</script>
-
-<script type="text/javascript">
 //<![CDATA[
 function myfunction() {
     var paymentform = document.getElementById('eximbay_place_form');
-    document.eximbay.visitorid.value = get_visitorid();
     paymentform.submit();
 }
 window.onload = myfunction;

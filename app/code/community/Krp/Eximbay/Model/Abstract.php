@@ -36,7 +36,8 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
     protected $_canAuthorize           = true;
     protected $_canCapture             = true;
     protected $_canCapturePartial      = false;
-    protected $_canRefund              = false;
+    protected $_canRefund              = true;
+    protected $_canRefundInvoicePartial = true;
     protected $_canVoid                = false;
     protected $_canUseInternal         = false;
     protected $_canUseCheckout         = true;
@@ -82,7 +83,7 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
     public function capture(Varien_Object $payment, $amount)
     {
         $payment->setStatus(self::STATUS_APPROVED)
-            ->setTransactionId($this->getTransactionId())
+            ->setTransactionId($payment->getLastTransId())
             ->setIsTransactionClosed(0);
 
         return $this;
@@ -103,6 +104,161 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
         return $this;
     }
 	
+    
+    /**
+     * Refund a capture transaction
+     *
+     * @param Varien_Object $payment
+     * @param float $amount
+     */
+    public function refund(Varien_Object $payment, $amount)
+    {
+   		Mage::log("Amount : ".$amount, null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
+    	if ($amount <= 0) {	
+			Mage::throwException(Mage::helper('eximbay')->__('Invalid amount for refund.'));
+		}
+			
+		Mage::log("TransID : ".$this->_getParentTransactionId($payment), null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
+		if (!$this->_getParentTransactionId($payment)) {
+			Mage::throwException(Mage::helper('eximbay')->__('Invalid transaction ID.'));
+		}	
+
+		$order = $payment->getOrder();
+
+		$canRefundMore = $payment->getCreditmemo()->getInvoice()->canRefund();
+		$isFullRefund = !$canRefundMore && (0 == ((float)$order->getBaseTotalOnlineRefunded() + (float)$order->getBaseTotalOfflineRefunded()));
+		$payment->setRefundType($isFullRefund ? 'F' : 'P');
+		$payment->setRefundAmt($amount,2);
+		$payment->setEximbayTransId($this->_getParentTransactionId($payment));
+
+		$request = $this->_buildRequest($payment);
+		$result = $this->_postRequest($request);
+		
+		if ($result['rescode'] == '0000') {
+			$shouldCloseCaptureTransaction = $payment->getOrder()->canCreditmemo() ? 0 : 1;
+			$payment
+				->setParentTransactionId($this->_getParentTransactionId($payment))
+				->setTransactionId($result['refundtransid'])
+				->setIsTransactionClosed(1)
+				->setShouldCloseParentTransaction($shouldCloseCaptureTransaction);
+				//->setTransactionAdditionalInfo("eximbayRefundTransId", $result['refundtransid']);
+
+			return $this;
+		}else{
+			Mage::throwException(Mage::helper('eximbay')->__($result['resmsg']));
+		}		
+    }
+    
+    /**
+     * Parent transaction id getter
+     *
+     * @param Varien_Object $payment
+     * @return string
+     */
+    protected function _getParentTransactionId(Varien_Object $payment)
+    {
+    	return $payment->getParentTransactionId() ? $payment->getParentTransactionId() : $payment->getLastTransId();
+    }
+    
+    /**
+     * Prepare request to gateway
+     *
+     * @param Mage_Payment_Model_Info $payment
+     * @return Krp_Eximbay_Model_Request
+     */
+    protected function _buildRequest(Varien_Object $payment)
+    {
+    	$order = $payment->getOrder();
+    
+    	$order_id = $order->getRealOrderId();
+    	$secretKey = Mage::getStoreConfig('payment/'.$this->getPaymentMethodCode().'/secret_key');
+    	$mid = Mage::getStoreConfig('payment/'.$this->getPaymentMethodCode().'/mid');
+    	$ref = $order_id;
+    	$cur = $order->getBaseCurrencyCode();
+    	$amt = round($this->getOrder()->getGrandTotal(), 2);
+    	if($cur == 'KRW' || $cur == 'JPY' || $cur == 'VND')
+    	{
+    		$amt = round($this->getOrder()->getGrandTotal(), 0, PHP_ROUND_HALF_UP);
+    	}
+    	
+    	$linkBuf = $secretKey. "?mid=" . $mid ."&ref=" . $ref ."&cur=" .$cur ."&amt=" .$amt;
+    	
+    	//$fgkey = md5($linkBuf);
+    	$fgkey = hash("sha256", $linkBuf);
+    	
+    	$txntype = 'REFUND';
+    	
+    	$params = array(
+    			'ver'      				=> $this->getAPIVersion(),
+    			'mid'      				=> $mid,
+    			'txntype'      			=> $txntype,
+    			'refundtype'      		=> $payment->getRefundType(),
+    			'charset'	      		=> 'UTF-8',
+    			'ref'             		=> $ref,
+    			'fgkey'            		=> $fgkey,
+    			'lang'              	=> $this->getLocale(),
+    			'amt'                	=> $amt,
+    			'cur'              		=> $cur,
+    			'refundamt'				=> $payment->getRefundAmt(),
+    			'transid'				=> $payment->getEximbayTransId(),
+    			'reason'				=> 'Merchant Request' 			
+    	);
+    	    	
+    	Mage::log($params, null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
+    	
+    	return $params;
+    }
+    
+    /**
+     * Post request to gateway and return responce
+     *
+     * @param Krp_Eximbay_Model_Request $request)
+     * @return Krp_Eximbay_Model_Result
+     */
+    protected function _postRequest(array $request)
+    {
+    	$client = new Varien_Http_Client();
+    	$client->setUri($this->getRefundUrl());
+    	
+    	Mage::log("RequestURL : ".$this->getRefundUrl(), null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
+    	
+    	$client->setConfig(array(
+    			'maxredirects'=>0,
+    			'timeout'=>30,
+    			//'ssltransport' => 'tcp',
+    	));
+
+    	$client->setParameterPost($request);
+    	$client->setMethod(Zend_Http_Client::POST);
+    	
+    	$result = array();
+    	try {
+    		$response = $client->request();
+    	} catch (Exception $e) {
+    		$result['rescode'] = $e->getCode();
+    		$result['resmsg'] = $e->getMessage();
+
+    		Mage::throwException(Mage::helper('eximbay')->__('Gateway error: %s', ($e->getMessage())));
+    	}
+    
+    	$responseBody = trim($response->getBody());
+    	Mage::log("Raw Response Data : ".$responseBody, null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
+
+    	Mage::log("------------- Mapped Response -------------", null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
+    	parse_str($responseBody, $data);
+    	foreach ($data as $key => $value) {
+    		$result[$key] = $value;
+    		Mage::log($key." : ".$result[$key], null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
+    	}
+    	
+    	if (empty($result['rescode'])) {
+    		Mage::throwException(Mage::helper('eximbay')->__('Error in payment gateway.'));
+    	}
+    
+    	return $result;
+    }
+    
+    
     /**
      * Detect Mobile Device
      *
@@ -175,6 +331,20 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
 				return 'https://secureapi.eximbay.com/Gateway/BasicProcessor.krp';
 			}
     	}
+    }
+    
+    /**
+     * Return url of refund method
+     *
+     * @return string
+     */
+    public function getRefundUrl()
+    {
+    	if($this->isTestMode()){
+    		return 'https://secureapi.test.eximbay.com/Gateway/DirectProcessor.krp';
+   		}else{
+   			return 'https://secureapi.eximbay.com/Gateway/DirectProcessor.krp';
+   		}
     }
 
     /**

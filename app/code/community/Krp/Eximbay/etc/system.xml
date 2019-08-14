@@ -859,6 +859,121 @@
 					</specificcountry>
                  </fields>
              </eximbay_ecn> 
+             <eximbay_all translate="label" module="eximbay">
+                 <label>All-in Payment (Powered by Eximbay)</label>
+                 <frontend_type>text</frontend_type>
+                 <sort_order>57</sort_order>
+                 <show_in_default>1</show_in_default>
+                 <show_in_website>1</show_in_website>
+                 <show_in_store>0</show_in_store>
+                 <fields>
+                    <active translate="label"> 
+						<label>Enabled</label>
+						<comment>Enable or disable this payment method</comment> 
+						<frontend_type>select</frontend_type> 
+						<config_path>payment/eximbay_all/active</config_path>
+						<source_model>adminhtml/system_config_source_yesno</source_model> 
+						<sort_order>1</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</active>
+					<title translate="label"> 
+						<label>Title</label>
+						<comment>Insert a custom title for this payment method</comment> 
+						<frontend_type>text</frontend_type> 
+						<config_path>payment/eximbay_all/title</config_path>
+						<sort_order>2</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</title>
+					<mid translate="label">
+						<label>Merchant ID</label>
+						<comment>Insert a merchant id provided by Eximbay</comment>
+						<frontend_type>text</frontend_type>
+						<config_path>payment/eximbay_all/mid</config_path>
+						<sort_order>3</sort_order>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_store>0</show_in_store>
+                    </mid>
+					<secret_key translate="label">
+						<label>Secret Key</label>
+						<comment>Insert a secret key provided by Eximbay</comment>
+						<frontend_type>text</frontend_type>
+						<config_path>payment/eximbay_all/secret_key</config_path>
+						<sort_order>4</sort_order>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_store>0</show_in_store>
+					</secret_key>
+					<order_status translate="label"> 
+						<label>New order status</label> 
+						<comment>Choose your preferred order status</comment>
+						<frontend_type>select</frontend_type> 
+						<config_path>payment/eximbay_all/order_status</config_path>
+						<!--<source_model>adminhtml/system_config_source_order_status</source_model>-->
+						<!--<source_model>adminhtml/system_config_source_order_status_new</source_model>-->
+						<source_model>adminhtml/system_config_source_order_status_processing</source_model>
+						<sort_order>5</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</order_status>
+					<test translate="label">
+                            <label>Test Mode</label>
+                            <comment>If you want to work in test mode, choose 'Yes'. Otherwise, choose 'No'</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_all/test</config_path>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </test>
+                    <ver translate="label">
+                            <label>API Version</label>
+                            <comment>Insert an Eximbay API version</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_all/ver</config_path>
+                            <source_model>eximbay/version</source_model>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </ver>
+                    <dtype translate="label">
+                            <label>Payment Page Type</label>
+                            <comment>Choose your payment page type, IFrame or Popup.</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_all/dtype</config_path>
+                            <source_model>eximbay/popupiframe</source_model>
+                            <sort_order>8</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </dtype>
+                    <allowspecific translate="label"> 
+						<label>Payment from applicable countries</label> 
+						<frontend_type>allowspecific</frontend_type> 
+						<sort_order>10</sort_order> 
+						<source_model>adminhtml/system_config_source_payment_allspecificcountries</source_model> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</allowspecific> 					
+					<specificcountry translate="label"> 
+						<label>Payment from Specific countries</label> 
+						<frontend_type>multiselect</frontend_type> 
+						<sort_order>11</sort_order> 
+						<source_model>adminhtml/system_config_source_country</source_model> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</specificcountry>
+                 </fields>
+             </eximbay_all> 
 		</groups> 
 	</payment> 
 	</sections> 

@@ -197,6 +197,14 @@
 				<order_status>processing</order_status>
 				<sort_order>7</sort_order>
 			</eximbay_ecn>
+			<eximbay_all>
+				<group>xbay</group>
+				<active>0</active>
+				<model>eximbay/all</model>
+				<title>All-in Payment</title>
+				<order_status>processing</order_status>
+				<sort_order>8</sort_order>
+			</eximbay_all>
 		</payment>
 		<eximbay>
             <settings>

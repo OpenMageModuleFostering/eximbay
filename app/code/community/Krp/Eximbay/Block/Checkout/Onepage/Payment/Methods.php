@@ -35,6 +35,10 @@ class Krp_Eximbay_Block_Checkout_Onepage_Payment_Methods extends Mage_Checkout_B
        			$imageLogo = '<img src="' . $this->getSkinUrl('images/eximbay/' . $method->getCode() . '.jpg') . '" > ';
        			
        			return $imageLogo.str_repeat('&nbsp;', 3).$this->escapeHtml($method->getTitle());
+       		}else if (file_exists($imageFilename . '.png')) {
+       			$imageLogo = '<img src="' . $this->getSkinUrl('images/eximbay/' . $method->getCode() . '.png') . '" > ';
+       			
+       			return $imageLogo.str_repeat('&nbsp;', 3).$this->escapeHtml($method->getTitle());
        		}        
        	} else {
             //$form = $this->getChild('payment.method.' . $method->getCode());
