@@ -279,7 +279,7 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
 			}
 		}
 		
-		Mage::log($params, null, 'eximbay.log');
+		Mage::log($params, null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
 		
         return $params;
     }

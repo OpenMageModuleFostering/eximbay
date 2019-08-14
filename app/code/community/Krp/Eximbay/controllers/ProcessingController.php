@@ -80,6 +80,8 @@ class Krp_Eximbay_ProcessingController extends Mage_Core_Controller_Front_Action
         $event = Mage::getModel('eximbay/event')
                  ->setEventData($this->getRequest()->getParams());
      
+        Mage::log($this->getRequest()->getParams(), null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
+        
         try {
         	
         	$rescode = $this->getRequest()->get('rescode');
@@ -135,6 +137,9 @@ class Krp_Eximbay_ProcessingController extends Mage_Core_Controller_Front_Action
     {
     	$event = Mage::getModel('eximbay/event')
     			->setEventData($this->getRequest()->getParams());
+    	
+    	Mage::log($this->getRequest()->getParams(), null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
+    	
     	$message = $event->processStatusEvent();
     	$this->getResponse()->setBody($message);
     }

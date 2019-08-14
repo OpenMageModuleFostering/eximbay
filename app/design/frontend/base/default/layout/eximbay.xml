@@ -30,7 +30,7 @@
             <action method="setMethodFormTemplate"><method>purchaseorder</method><template>payment/form/purchaseorder.phtml</template></action>
         </block>
     </checkout_onepage_paymentmethod>
-    
+     
     <eximbay_processing_payment>
         <reference name="root">
             <action method="setTemplate"><template>page/1column.phtml</template></action>
