@@ -30,6 +30,12 @@
             <action method="setMethodFormTemplate"><method>purchaseorder</method><template>payment/form/purchaseorder.phtml</template></action>
         </block>
     </checkout_onepage_paymentmethod>
+    
+    <checkout_onepage_review>
+        <reference name="checkout.onepage.review.button">
+            <action method="setTemplate"><template helper="eximbay/ppp/getReviewButtonTemplate"><name>eximbay/checkout/onepage/review/button.phtml</name><block>checkout.onepage.review.button</block></template></action>
+        </reference>
+    </checkout_onepage_review>
      
     <eximbay_processing_payment>
         <reference name="root">

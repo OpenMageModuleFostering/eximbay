@@ -252,9 +252,11 @@ class Krp_Eximbay_Model_Event
 					Mage::throwException('Secretkey is empty.');
 				}
 				
-				$suffix = "&transid=" .$params['transid'];
+				$suffix = '';
 				if (empty($params['transid'])){
 					$suffix = "&requestid=" .$params['requestid'];
+				}else{
+					$suffix = "&transid=" .$params['transid'];
 				}
 				
             	$linkBuf = $secretKey. "?mid=" .$params['mid'] ."&ref=" .$params['ref'] ."&cur=" .$params['cur'] ."&amt=" .$params['amt'] ."&rescode=" .$params['rescode'] .$suffix;

@@ -36,8 +36,34 @@ class Krp_Eximbay_ProcessingController extends Mage_Core_Controller_Front_Action
      */
     public function placeformAction()
     {
-       $this->loadLayout();
-       $this->renderLayout();
+    	try {
+	    	$session = $this->_getCheckout();
+	    	
+	    	$order = Mage::getModel('sales/order');
+	    	$order->loadByIncrementId($session->getLastRealOrderId());
+	    	if (!$order->getId()) {
+	    		Mage::throwException('No order for processing found');
+	    	}
+	    	
+	    	$payMethod = $order->getPayment()->getMethodInstance()->getCode();
+	        $windowType = Mage::getStoreConfig('payment/'.$payMethod.'/dtype');
+	    	
+	        Mage::log("Window Type : ".$windowType, null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
+	    	
+	    	if(!$windowType){
+		    	$session->setEximbayQuoteId($session->getQuoteId());
+		    	$session->setEximbayRealOrderId($session->getLastRealOrderId());
+		    	$session->getQuote()->setIsActive(false)->save();
+		    	//$session->clear();
+	    	}
+	    		
+	    	$this->loadLayout();
+	       	$this->renderLayout();
+	       	
+       	} catch (Exception $e){
+       		Mage::logException($e);
+       		parent::_redirect('checkout/cart');
+       	}
     }
 
     /**
@@ -58,10 +84,15 @@ class Krp_Eximbay_ProcessingController extends Mage_Core_Controller_Front_Action
                 Mage::helper('eximbay')->__('The customer was redirected to Eximbay.')
             );
             $order->save();
-
-            $session->setEximbayQuoteId($session->getQuoteId());
-            $session->setEximbayRealOrderId($session->getLastRealOrderId());
-            $session->getQuote()->setIsActive(false)->save();
+			
+            $payMethod = $order->getPayment()->getMethodInstance()->getCode();
+            $windowType = Mage::getStoreConfig('payment/'.$payMethod.'/dtype');
+            
+            if($windowType){
+            	$session->setEximbayQuoteId($session->getQuoteId());
+            	$session->setEximbayRealOrderId($session->getLastRealOrderId());
+            	$session->getQuote()->setIsActive(false)->save();
+            }
             $session->clear();
 
             $this->loadLayout();
@@ -85,6 +116,10 @@ class Krp_Eximbay_ProcessingController extends Mage_Core_Controller_Front_Action
         try {
         	
         	$rescode = $this->getRequest()->get('rescode');
+        	$resmsg= $this->getRequest()->get('resmsg');
+        	
+        	$urlargs['rescode'] = urlencode($rescode);
+        	$urlargs['resmsg'] = urlencode($resmsg);
         	
         	if($rescode == '0000'){
             	$quoteId = $event->successEvent();
@@ -92,7 +127,7 @@ class Krp_Eximbay_ProcessingController extends Mage_Core_Controller_Front_Action
             	$this->_redirect('checkout/onepage/success');
             	return;
         	}else{
-        		$this->_redirect('eximbay/processing/cancel');
+        		$this->_redirect('eximbay/processing/cancel', $urlargs);
         		return;
         	}
         	
@@ -113,7 +148,16 @@ class Krp_Eximbay_ProcessingController extends Mage_Core_Controller_Front_Action
     	$event = Mage::getModel('eximbay/event')
     			->setEventData($data);
     	
-    	$message = $event->cancelEvent();
+    	$rescode = $this->getRequest()->getParam('rescode');
+    	$resmsg = $this->getRequest()->getParam('resmsg');
+    	
+    	Mage::log('rescode : '.$rescode.' resmsg : '.$resmsg, null, 'eximbay'.Mage::getModel('core/date')->date('Y-m-d').'.log');
+    	
+    	if($rescode == 'XXXX'){
+    		$message = $event->cancelEvent();
+    	}else{
+    		$message = $resmsg;
+    	}
     	
     	// set quote to active
     	$session = $this->_getCheckout();
