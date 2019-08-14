@@ -189,7 +189,7 @@ abstract class Krp_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abst
     	$txntype = 'REFUND';
     	
     	$params = array(
-    			'ver'      				=> $this->getAPIVersion(),
+    			'ver'      				=> '210',
     			'mid'      				=> $mid,
     			'txntype'      			=> $txntype,
     			'refundtype'      		=> $payment->getRefundType(),
