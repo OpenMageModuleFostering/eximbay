@@ -79,12 +79,21 @@ class Mage_Eximbay_ProcessingController extends Mage_Core_Controller_Front_Actio
     {
         $event = Mage::getModel('eximbay/event')
                  ->setEventData($this->getRequest()->getParams());
-        
+     
         try {
-            $quoteId = $event->successEvent();
-            $this->_getCheckout()->setLastSuccessQuoteId($quoteId);
-            $this->_redirect('checkout/onepage/success');
-            return;
+        	
+        	$rescode = $this->getRequest()->get('rescode');
+        	
+        	if($rescode == '0000'){
+            	$quoteId = $event->successEvent();
+            	$this->_getCheckout()->setLastSuccessQuoteId($quoteId);
+            	$this->_redirect('checkout/onepage/success');
+            	return;
+        	}else{
+        		$this->_redirect('eximbay/processing/cancel');
+        		return;
+        	}
+        	
         } catch (Mage_Core_Exception $e) {
             $this->_getCheckout()->addError($e->getMessage());
         } catch(Exception $e) {

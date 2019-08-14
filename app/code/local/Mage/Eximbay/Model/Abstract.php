@@ -112,7 +112,7 @@ abstract class Mage_Eximbay_Model_Abstract extends Mage_Payment_Model_Method_Abs
     {
 		$test_mode = Mage::getStoreConfig('payment/eximbay_acc/test');
 		if($test_mode){
-			return 'http://www.test2.eximbay.com/web/payment2.0/payment_real.do';
+			return 'https://www.test.eximbay.com/web/payment2.0/payment_real.do';
 		}else{
 			return 'https://www.eximbay.com/web/payment2.0/payment_real.do';
 		}

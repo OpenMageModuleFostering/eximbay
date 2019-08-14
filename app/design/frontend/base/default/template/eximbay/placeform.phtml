@@ -20,8 +20,12 @@
  * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
  */
 ?>
+<div id="eximbay-loading-img" style="text-align:center;">
+	<div class="please-wait" id="eximbay-please-wait" style="line-height: 500px;">
+    	<img src="<?php echo $this->getSkinUrl('images/eximbay/eximbay_loading.gif') ?>"/>
+   	</div>
+</div>
 
-<b><?php echo Mage::helper('eximbay')->__('Loading secure payment page (SSL)'); ?></b>
 <form name="eximbay" id="eximbay_place_form" action="<?php echo $this->getFormAction();?>" method="POST">
 <?php if (is_array($this->getFormData())): ?>
     <?php foreach ($this->getFormData() as $name => $value): ?>

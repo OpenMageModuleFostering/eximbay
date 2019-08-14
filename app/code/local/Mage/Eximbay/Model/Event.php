@@ -86,7 +86,8 @@ class Mage_Eximbay_Model_Event
                 $this->_processSale($msg);
             }else{    							 //fail
             	$msg = Mage::helper('eximbay')->__('Payment was not successful. Response Code :'.$params['rescode'].' Response Message :'.$params['resmsg']);
-            	$this->_processFail($msg);
+            	//$this->_processFail($msg); 
+            	$this->_processCancel($msg); 
             }
             return $msg;
         } catch (Mage_Core_Exception $e) {
