@@ -1,12 +1,12 @@
 {
     "name": "OpenMageModuleFostering/Eximbay",
     "type": "magento-module",
-    "license": "GNU-General-Public-License-(GPL-3.0)",
+    "license": "GNU-General-Public-License",
     "homepage": "",
     "description": "Official Eximbay Payment Extension",
     "authors": [
     {
-        "name": "Uuganbayar Choijiljav",
+        "name": "KRPartners Co.,Ltd",
         "email": "prokod@kr.net"
     }
 ],
