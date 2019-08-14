@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+<?php
 /**
  * Eximbay, Online Payment Module
  *
@@ -20,11 +19,25 @@
  * @copyright   Copyright (c) 2014 KRPartners Co.,Ltd (https://www.eximbay.com)
  * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
  */
--->
-<layout>
-    <adminhtml_system_config_edit>
-        <reference name="content">
-            <block type="eximbay/jsinit" name="eximbay_jsinit"  template="eximbay/jsinit.phtml"></block>
-        </reference>
-    </adminhtml_system_config_edit>
-</layout>
+
+/* @var $installer Mage_Core_Model_Resource_Setup */
+/*$installer = $this;
+
+$installer->startSetup();
+$conn = $installer->getConnection();
+
+$select = $conn
+    ->select()
+    ->from($this->getTable('core/config_data'), array('scope', 'scope_id', 'path', 'value'))
+    ->where(new Zend_Db_Expr("path LIKE 'eximbay/eximbay%'"));
+$data = $conn->fetchAll($select);
+
+if (!empty($data)) {
+    foreach ($data as $key => $value) {
+        $data[$key]['path'] = preg_replace('/^eximbay\/eximbay/', 'payment/eximbay', $value['path']);
+    }
+    $conn->insertOnDuplicate($this->getTable('core/config_data'), $data, array('path'));
+    $conn->delete($this->getTable('core/config_data'), new Zend_Db_Expr("path LIKE 'eximbay/eximbay%'"));
+}
+$installer->endSetup();
+*/

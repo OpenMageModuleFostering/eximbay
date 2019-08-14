@@ -1,0 +1,684 @@
+<?xml version="1.0"?> 
+<!--
+/**
+ * Eximbay, Online Payment Module
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the GNU General Public License (GPL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/GPL-3.0 or http://www.gnu.org/copyleft/gpl.html
+ * 
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Eximbay module to newer
+ * versions in the future. If you wish to customize Eximbay module for your
+ * needs please refer to https://www.eximbay.com for more information.
+ *
+ * @category    Krp
+ * @package     Krp_Eximbay
+ * @copyright   Copyright (c) 2014 KRPartners Co.,Ltd (https://www.eximbay.com)
+ * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
+ */
+-->
+<config> 
+	<sections> 
+	<payment> 
+		<groups>
+			<eximbay_acc translate="label" module="eximbay"> 
+				<label>Credit Cards/ Visa, Mastercard, JCB (Powered by Eximbay)</label> 
+				<frontend_type>text</frontend_type>
+				<sort_order>50</sort_order> 
+				<show_in_default>1</show_in_default> 
+				<show_in_website>1</show_in_website> 
+				<show_in_store>0</show_in_store> 
+				<fields> 
+					<active translate="label"> 
+						<label>Enabled</label>
+						<comment>Enable or disable this payment method</comment> 
+						<frontend_type>select</frontend_type> 
+						<config_path>payment/eximbay_acc/active</config_path>
+						<source_model>adminhtml/system_config_source_yesno</source_model> 
+						<sort_order>1</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</active>
+					<title translate="label"> 
+						<label>Title</label>
+						<comment>Insert a custom title for this payment method</comment> 
+						<frontend_type>text</frontend_type> 
+						<config_path>payment/eximbay_acc/title</config_path>
+						<sort_order>2</sort_order> 
+						<show_in_default>0</show_in_default> 
+						<show_in_website>0</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</title>
+					<mid translate="label">
+						<label>Merchant ID</label>
+						<comment>Insert a merchant id provided by Eximbay</comment>
+						<frontend_type>obscure</frontend_type>
+						<config_path>payment/eximbay_acc/mid</config_path>
+						<backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+						<sort_order>3</sort_order>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_store>0</show_in_store>
+                    </mid>
+					<secret_key translate="label">
+						<label>Secret Key</label>
+						<comment>Insert a secret key provided by Eximbay</comment>
+						<frontend_type>obscure</frontend_type>
+						<config_path>payment/eximbay_acc/secret_key</config_path>
+						<backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+						<sort_order>4</sort_order>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_store>0</show_in_store>
+					</secret_key>
+					<order_status translate="label"> 
+						<label>New order status</label> 
+						<comment>Choose your preferred order status</comment>
+						<frontend_type>select</frontend_type> 
+						<config_path>payment/eximbay_acc/order_status</config_path>
+						<!--<source_model>adminhtml/system_config_source_order_status</source_model>-->
+						<!--<source_model>adminhtml/system_config_source_order_status_new</source_model>-->
+						<source_model>adminhtml/system_config_source_order_status_processing</source_model>
+						<sort_order>5</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</order_status>
+					<test translate="label">
+                            <label>Test Mode</label>
+                            <comment>If you want to work in test mode, choose 'Yes'. Otherwise, choose 'No'</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_acc/test</config_path>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </test>
+                    <dtype translate="label">
+                            <label>Payment Page Type</label>
+                            <comment>Choose your payment page type, IFrame or Popup.</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_acc/dtype</config_path>
+                            <source_model>eximbay/popupiframe</source_model>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </dtype>
+					<!--<currency translate="label">
+                            <label>Accepted Currency</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_currency</source_model>
+                            <sort_order>8</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                    </currency>-->
+					<!--<cctypes translate="label">
+                            <label>Credit Card Types</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>paygate/authorizenet_source_cctype</source_model>
+                            <sort_order>9</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                    </cctypes>-->
+					<!--<allowspecific translate="label"> 
+						<label>Payment from applicable countries</label> 
+						<frontend_type>allowspecific</frontend_type> 
+						<sort_order>10</sort_order> 
+						<source_model>adminhtml/system_config_source_payment_allspecificcountries</source_model> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>1</show_in_store> 
+					</allowspecific> 					
+					<specificcountry translate="label"> 
+						<label>Payment from Specific countries</label> 
+						<frontend_type>multiselect</frontend_type> 
+						<sort_order>11</sort_order> 
+						<source_model>adminhtml/system_config_source_country</source_model> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>1</show_in_store> 
+					</specificcountry>
+					-->
+				</fields> 
+			</eximbay_acc>
+			<eximbay_ppl translate="label" module="eximbay">
+                <label>PayPal (Powered by Eximbay)</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>51</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>0</show_in_store>
+                <fields>
+                    <active translate="label"> 
+						<label>Enabled</label>
+						<comment>Enable or disable this payment method</comment> 
+						<frontend_type>select</frontend_type> 
+						<config_path>payment/eximbay_ppl/active</config_path>
+						<source_model>adminhtml/system_config_source_yesno</source_model> 
+						<sort_order>1</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</active>
+					<title translate="label"> 
+						<label>Title</label>
+						<comment>Insert a custom title for this payment method</comment> 
+						<frontend_type>text</frontend_type> 
+						<config_path>payment/eximbay_ppl/title</config_path>
+						<sort_order>2</sort_order> 
+						<show_in_default>0</show_in_default> 
+						<show_in_website>0</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</title>
+					<mid translate="label">
+						<label>Merchant ID</label>
+						<comment>Insert a merchant id provided by Eximbay</comment>
+						<frontend_type>obscure</frontend_type>
+						<config_path>payment/eximbay_ppl/mid</config_path>
+						<backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+						<sort_order>3</sort_order>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_store>0</show_in_store>
+                    </mid>
+					<secret_key translate="label">
+						<label>Secret Key</label>
+						<comment>Insert a secret key provided by Eximbay</comment>
+						<frontend_type>obscure</frontend_type>
+						<config_path>payment/eximbay_ppl/secret_key</config_path>
+						<backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+						<sort_order>4</sort_order>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_store>0</show_in_store>
+					</secret_key>
+					<order_status translate="label"> 
+						<label>New order status</label> 
+						<comment>Choose your preferred order status</comment>
+						<frontend_type>select</frontend_type> 
+						<config_path>payment/eximbay_ppl/order_status</config_path>
+						<!--<source_model>adminhtml/system_config_source_order_status</source_model>-->
+						<!--<source_model>adminhtml/system_config_source_order_status_new</source_model>-->
+						<source_model>adminhtml/system_config_source_order_status_processing</source_model>
+						<sort_order>5</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</order_status>
+					<test translate="label">
+                            <label>Test Mode</label>
+                            <comment>If you want to work in test mode, choose 'Yes'. Otherwise, choose 'No'</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_ppl/test</config_path>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </test>
+                    <dtype translate="label">
+                            <label>Payment Page Type</label>
+                            <comment>Choose your payment page type, IFrame or Popup.</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_ppl/dtype</config_path>
+                            <source_model>eximbay/popup</source_model>
+                            <sort_order>7</sort_order>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </dtype>
+                </fields>
+             </eximbay_ppl> 
+             <eximbay_cup translate="label" module="eximbay">
+                <label>China UnionPay (Powered by Eximbay)</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>52</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>0</show_in_store>
+                <fields>
+                    <active translate="label"> 
+						<label>Enabled</label>
+						<comment>Enable or disable this payment method</comment> 
+						<frontend_type>select</frontend_type> 
+						<config_path>payment/eximbay_cup/active</config_path>
+						<source_model>adminhtml/system_config_source_yesno</source_model> 
+						<sort_order>1</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</active>
+					<title translate="label"> 
+						<label>Title</label>
+						<comment>Insert a custom title for this payment method</comment> 
+						<frontend_type>text</frontend_type> 
+						<config_path>payment/eximbay_cup/title</config_path>
+						<sort_order>2</sort_order> 
+						<show_in_default>0</show_in_default> 
+						<show_in_website>0</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</title>
+					<mid translate="label">
+						<label>Merchant ID</label>
+						<comment>Insert a merchant id provided by Eximbay</comment>
+						<frontend_type>obscure</frontend_type>
+						<config_path>payment/eximbay_cup/mid</config_path>
+						<backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+						<sort_order>3</sort_order>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_store>0</show_in_store>
+                    </mid>
+					<secret_key translate="label">
+						<label>Secret Key</label>
+						<comment>Insert a secret key provided by Eximbay</comment>
+						<frontend_type>obscure</frontend_type>
+						<config_path>payment/eximbay_cup/secret_key</config_path>
+						<backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+						<sort_order>4</sort_order>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_store>0</show_in_store>
+					</secret_key>
+					<order_status translate="label"> 
+						<label>New order status</label> 
+						<comment>Choose your preferred order status</comment>
+						<frontend_type>select</frontend_type> 
+						<config_path>payment/eximbay_cup/order_status</config_path>
+						<!--<source_model>adminhtml/system_config_source_order_status</source_model>-->
+						<!--<source_model>adminhtml/system_config_source_order_status_new</source_model>-->
+						<source_model>adminhtml/system_config_source_order_status_processing</source_model>
+						<sort_order>5</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</order_status>
+					<test translate="label">
+                            <label>Test Mode</label>
+                            <comment>If you want to work in test mode, choose 'Yes'. Otherwise, choose 'No'</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_cup/test</config_path>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </test>
+                    <dtype translate="label">
+                            <label>Payment Page Type</label>
+                            <comment>Choose your payment page type, IFrame or Popup.</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_cup/dtype</config_path>
+                            <source_model>eximbay/popup</source_model>
+                            <sort_order>7</sort_order>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </dtype>
+                </fields>
+             </eximbay_cup> 
+             <eximbay_alp translate="label" module="eximbay">
+                <label>Alipay (Powered by Eximbay)</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>53</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>0</show_in_store>
+                <fields>
+                    <active translate="label"> 
+						<label>Enabled</label>
+						<comment>Enable or disable this payment method</comment> 
+						<frontend_type>select</frontend_type> 
+						<config_path>payment/eximbay_alp/active</config_path>
+						<source_model>adminhtml/system_config_source_yesno</source_model> 
+						<sort_order>1</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</active>
+					<title translate="label"> 
+						<label>Title</label>
+						<comment>Insert a custom title for this payment method</comment> 
+						<frontend_type>text</frontend_type> 
+						<config_path>payment/eximbay_alp/title</config_path>
+						<sort_order>2</sort_order> 
+						<show_in_default>0</show_in_default> 
+						<show_in_website>0</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</title>
+					<mid translate="label">
+						<label>Merchant ID</label>
+						<comment>Insert a merchant id provided by Eximbay</comment>
+						<frontend_type>obscure</frontend_type>
+						<config_path>payment/eximbay_alp/mid</config_path>
+						<backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+						<sort_order>3</sort_order>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_store>0</show_in_store>
+                    </mid>
+					<secret_key translate="label">
+						<label>Secret Key</label>
+						<comment>Insert a secret key provided by Eximbay</comment>
+						<frontend_type>obscure</frontend_type>
+						<config_path>payment/eximbay_alp/secret_key</config_path>
+						<backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+						<sort_order>4</sort_order>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_store>0</show_in_store>
+					</secret_key>
+					<order_status translate="label"> 
+						<label>New order status</label> 
+						<comment>Choose your preferred order status</comment>
+						<frontend_type>select</frontend_type> 
+						<config_path>payment/eximbay_alp/order_status</config_path>
+						<!--<source_model>adminhtml/system_config_source_order_status</source_model>-->
+						<!--<source_model>adminhtml/system_config_source_order_status_new</source_model>-->
+						<source_model>adminhtml/system_config_source_order_status_processing</source_model>
+						<sort_order>5</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</order_status>
+					<test translate="label">
+                            <label>Test Mode</label>
+                            <comment>If you want to work in test mode, choose 'Yes'. Otherwise, choose 'No'</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_alp/test</config_path>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </test>
+                    <dtype translate="label">
+                            <label>Payment Page Type</label>
+                            <comment>Choose your payment page type, IFrame or Popup.</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_alp/dtype</config_path>
+                            <source_model>eximbay/popup</source_model>
+                            <sort_order>7</sort_order>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </dtype>
+                </fields>
+             </eximbay_alp> 
+             <eximbay_tnp translate="label" module="eximbay">
+                <label>Tenpay (Powered by Eximbay)</label>
+                <frontend_type>text</frontend_type>
+                <sort_order>54</sort_order>
+                <show_in_default>1</show_in_default>
+                <show_in_website>1</show_in_website>
+                <show_in_store>0</show_in_store>
+                <fields>
+                    <active translate="label"> 
+						<label>Enabled</label>
+						<comment>Enable or disable this payment method</comment> 
+						<frontend_type>select</frontend_type> 
+						<config_path>payment/eximbay_tnp/active</config_path>
+						<source_model>adminhtml/system_config_source_yesno</source_model> 
+						<sort_order>1</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</active>
+					<title translate="label"> 
+						<label>Title</label>
+						<comment>Insert a custom title for this payment method</comment> 
+						<frontend_type>text</frontend_type> 
+						<config_path>payment/eximbay_tnp/title</config_path>
+						<sort_order>2</sort_order> 
+						<show_in_default>0</show_in_default> 
+						<show_in_website>0</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</title>
+					<mid translate="label">
+						<label>Merchant ID</label>
+						<comment>Insert a merchant id provided by Eximbay</comment>
+						<frontend_type>obscure</frontend_type>
+						<config_path>payment/eximbay_tnp/mid</config_path>
+						<backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+						<sort_order>3</sort_order>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_store>0</show_in_store>
+                    </mid>
+					<secret_key translate="label">
+						<label>Secret Key</label>
+						<comment>Insert a secret key provided by Eximbay</comment>
+						<frontend_type>obscure</frontend_type>
+						<config_path>payment/eximbay_tnp/secret_key</config_path>
+						<backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+						<sort_order>4</sort_order>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_store>0</show_in_store>
+					</secret_key>
+					<order_status translate="label"> 
+						<label>New order status</label> 
+						<comment>Choose your preferred order status</comment>
+						<frontend_type>select</frontend_type> 
+						<config_path>payment/eximbay_tnp/order_status</config_path>
+						<!--<source_model>adminhtml/system_config_source_order_status</source_model>-->
+						<!--<source_model>adminhtml/system_config_source_order_status_new</source_model>-->
+						<source_model>adminhtml/system_config_source_order_status_processing</source_model>
+						<sort_order>5</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</order_status>
+					<test translate="label">
+                            <label>Test Mode</label>
+                            <comment>If you want to work in test mode, choose 'Yes'. Otherwise, choose 'No'</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_tnp/test</config_path>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </test>
+                    <dtype translate="label">
+                            <label>Payment Page Type</label>
+                            <comment>Choose your payment page type, IFrame or Popup.</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_tnp/dtype</config_path>
+                            <source_model>eximbay/popup</source_model>
+                            <sort_order>7</sort_order>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </dtype>
+                 </fields>
+             </eximbay_tnp> 
+             <eximbay_nnb translate="label" module="eximbay">
+                 <label>99Bill (Powered by Eximbay)</label>
+                 <frontend_type>text</frontend_type>
+                 <sort_order>55</sort_order>
+                 <show_in_default>1</show_in_default>
+                 <show_in_website>1</show_in_website>
+                 <show_in_store>0</show_in_store>
+                 <fields>
+                    <active translate="label"> 
+						<label>Enabled</label>
+						<comment>Enable or disable this payment method</comment> 
+						<frontend_type>select</frontend_type> 
+						<config_path>payment/eximbay_nnb/active</config_path>
+						<source_model>adminhtml/system_config_source_yesno</source_model> 
+						<sort_order>1</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</active>
+					<title translate="label"> 
+						<label>Title</label>
+						<comment>Insert a custom title for this payment method</comment> 
+						<frontend_type>text</frontend_type> 
+						<config_path>payment/eximbay_nnb/title</config_path>
+						<sort_order>2</sort_order> 
+						<show_in_default>0</show_in_default> 
+						<show_in_website>0</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</title>
+					<mid translate="label">
+						<label>Merchant ID</label>
+						<comment>Insert a merchant id provided by Eximbay</comment>
+						<frontend_type>obscure</frontend_type>
+						<config_path>payment/eximbay_nnb/mid</config_path>
+						<backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+						<sort_order>3</sort_order>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_store>0</show_in_store>
+                    </mid>
+					<secret_key translate="label">
+						<label>Secret Key</label>
+						<comment>Insert a secret key provided by Eximbay</comment>
+						<frontend_type>obscure</frontend_type>
+						<config_path>payment/eximbay_nnb/secret_key</config_path>
+						<backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+						<sort_order>4</sort_order>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_store>0</show_in_store>
+					</secret_key>
+					<order_status translate="label"> 
+						<label>New order status</label> 
+						<comment>Choose your preferred order status</comment>
+						<frontend_type>select</frontend_type> 
+						<config_path>payment/eximbay_nnb/order_status</config_path>
+						<!--<source_model>adminhtml/system_config_source_order_status</source_model>-->
+						<!--<source_model>adminhtml/system_config_source_order_status_new</source_model>-->
+						<source_model>adminhtml/system_config_source_order_status_processing</source_model>
+						<sort_order>5</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</order_status>
+					<test translate="label">
+                            <label>Test Mode</label>
+                            <comment>If you want to work in test mode, choose 'Yes'. Otherwise, choose 'No'</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_nnb/test</config_path>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </test>
+                    <dtype translate="label">
+                            <label>Payment Page Type</label>
+                            <comment>Choose your payment page type, IFrame or Popup.</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_nnb/dtype</config_path>
+                            <source_model>eximbay/popup</source_model>
+                            <sort_order>7</sort_order>
+                            <show_in_default>0</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </dtype>
+                 </fields>
+             </eximbay_nnb> 
+			 <eximbay_ecn translate="label" module="eximbay">
+                 <label>Cash Payment - Japan (Powered by Eximbay)</label>
+                 <frontend_type>text</frontend_type>
+                 <sort_order>56</sort_order>
+                 <show_in_default>1</show_in_default>
+                 <show_in_website>1</show_in_website>
+                 <show_in_store>0</show_in_store>
+                 <fields>
+                    <active translate="label"> 
+						<label>Enabled</label>
+						<comment>Enable or disable this payment method</comment> 
+						<frontend_type>select</frontend_type> 
+						<config_path>payment/eximbay_ecn/active</config_path>
+						<source_model>adminhtml/system_config_source_yesno</source_model> 
+						<sort_order>1</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</active>
+					<title translate="label"> 
+						<label>Title</label>
+						<comment>Insert a custom title for this payment method</comment> 
+						<frontend_type>text</frontend_type> 
+						<config_path>payment/eximbay_ecn/title</config_path>
+						<sort_order>2</sort_order> 
+						<show_in_default>0</show_in_default> 
+						<show_in_website>0</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</title>
+					<mid translate="label">
+						<label>Merchant ID</label>
+						<comment>Insert a merchant id provided by Eximbay</comment>
+						<frontend_type>obscure</frontend_type>
+						<config_path>payment/eximbay_ecn/mid</config_path>
+						<backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+						<sort_order>3</sort_order>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_store>0</show_in_store>
+                    </mid>
+					<secret_key translate="label">
+						<label>Secret Key</label>
+						<comment>Insert a secret key provided by Eximbay</comment>
+						<frontend_type>obscure</frontend_type>
+						<config_path>payment/eximbay_ecn/secret_key</config_path>
+						<backend_model>adminhtml/system_config_backend_encrypted</backend_model>
+						<sort_order>4</sort_order>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_store>0</show_in_store>
+					</secret_key>
+					<order_status translate="label"> 
+						<label>New order status</label> 
+						<comment>Choose your preferred order status</comment>
+						<frontend_type>select</frontend_type> 
+						<config_path>payment/eximbay_ecn/order_status</config_path>
+						<!--<source_model>adminhtml/system_config_source_order_status</source_model>-->
+						<!--<source_model>adminhtml/system_config_source_order_status_new</source_model>-->
+						<source_model>adminhtml/system_config_source_order_status_processing</source_model>
+						<sort_order>5</sort_order> 
+						<show_in_default>1</show_in_default> 
+						<show_in_website>1</show_in_website> 
+						<show_in_store>0</show_in_store> 
+					</order_status>
+					<test translate="label">
+                            <label>Test Mode</label>
+                            <comment>If you want to work in test mode, choose 'Yes'. Otherwise, choose 'No'</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_ecn/test</config_path>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>6</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </test>
+                    <dtype translate="label">
+                            <label>Payment Page Type</label>
+                            <comment>Choose your payment page type, IFrame or Popup.</comment>
+                            <frontend_type>select</frontend_type>
+                            <config_path>payment/eximbay_ecn/dtype</config_path>
+                            <source_model>eximbay/popupiframe</source_model>
+                            <sort_order>7</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                    </dtype>
+                 </fields>
+             </eximbay_ecn> 
+		</groups> 
+	</payment> 
+	</sections> 
+</config>

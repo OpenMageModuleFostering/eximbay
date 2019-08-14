@@ -14,9 +14,9 @@
  * versions in the future. If you wish to customize Eximbay module for your
  * needs please refer to https://www.eximbay.com for more information.
  *
- * @category    Mage
- * @package     Mage_Eximbay
- * @copyright   Copyright (c) 2013 KRPartners Co.,Ltd (https://www.eximbay.com)
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2014 KRPartners Co.,Ltd (https://www.eximbay.com)
  * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
  */
 ?>
@@ -26,11 +26,11 @@
         <?php echo Mage::helper('eximbay')->__('You will be redirected to our secure payment page when you place an order.') ?>
     </li>
     <?php if ($_img = $this->getPaymentImageSrc($_code)): ?>
-    <li>
+    <li style="float: right;">
         <div style="padding:10px 15px 15px;">
-            <img src="<?php echo $_img ?>" alt="" /><br />
-            <a href="<?php echo $this->getEximbayInfoUrl() ?>" target="_blank"><?php echo Mage::helper('eximbay')->__('More information about Eximbay') ?></a>
+            <a href="<?php echo $this->getEximbayInfoUrl() ?>" target="_blank"><img src="<?php echo $_img ?>" alt="" /></a>
         </div>
     </li>
+    <br/>
     <?php endif; ?>
 </ul>

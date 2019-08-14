@@ -14,9 +14,9 @@
  * versions in the future. If you wish to customize Eximbay module for your
  * needs please refer to https://www.eximbay.com for more information.
  *
- * @category    Mage
- * @package     Mage_Eximbay
- * @copyright   Copyright (c) 2013 KRPartners Co.,Ltd (https://www.eximbay.com)
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2014 KRPartners Co.,Ltd (https://www.eximbay.com)
  * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
  */
 ?>
@@ -26,9 +26,9 @@
 
 <table style="width:100%;">
  	<tr>
- 		<td style="width:75%; align:center;">
+ 		<td style="width:68%; align:center;">
  			<?php if ($this->getEximbayDisplayType()): ?>
-            <iframe style="width:100%; height:600px;" src="<?php echo Mage::getUrl('eximbay/processing/placeform') ?>"></iframe>
+            <iframe style="width:100%; height:600px; border:0;" src="<?php echo Mage::getUrl('eximbay/processing/placeform') ?>"></iframe>
 			<?php else: ?>
 	 			<table class="data-table" id="checkout-review-table" style="width:100%;">
 		    	 	<thead>
@@ -39,16 +39,18 @@
 		                <th class="a-center"><?php echo $this->__('Payment Method:') ?></th>
 		            </tr>
 		        	</thead>
+		        	<tbody>
 	                <tr style="height:35px;">
-	                    <th style="text-align:center;"><?php echo $this->getEximbayTransId() ?></th>
-	                    <th style="text-align:center;"><?php echo $this->getEximbayDate() ?></th>
-	                    <th style="text-align:center;"><?php echo $this->getEximbayAmt() ?></th>
-	                    <th style="text-align:center;"><?php echo $this->getEximbayTitle() ?></th>
+	                    <td style="text-align:center;"><?php echo $this->getEximbayTransId() ?></td>
+	                    <td style="text-align:center;"><?php echo $this->getEximbayDate() ?></td>
+	                    <td style="text-align:center;"><?php echo $this->getEximbayAmt() ?></td>
+	                    <td style="text-align:center;"><?php echo $this->getEximbayTitle() ?></td>
 	                </tr>
+	                </tbody>
 	     		</table>
 	     		<div class="buttons-set" id="review-buttons-container">
 	     		<table class="buttons-table" id="review-buttons-table" style="width:100%;">
-	     			<tr><td style="text-align:right;">Thank you for your order, please click the button below to pay with Eximbay.</td></tr>
+	     			<tr><td style="text-align:right;"><?php echo Mage::helper('eximbay')->__('Thank you for your order, please click the button below to pay with Eximbay.') ?></td></tr>
 			        <tr><td style="text-align:left;">
 			        	<button type="submit" title="<?php echo $this->__('Pay via Eximbay') ?>" class="button btn-checkout" onclick="javascript:window.open('<?php echo Mage::getUrl('eximbay/processing/placeform') ?>','payment2','scrollbars=yes,status=no,toolbar=no,resizable=yes,location=no,menu=no,width=800,height=470,top=200,left=300'); this.disabled=true; disableCancelLink();"><span><span><?php echo $this->__('Pay via Eximbay') ?></span></span></button>
 			        	<p class="f-left"><a id="eximbay-cancel-link" href="<?php echo $this->getUrl('eximbay/processing/cancel') ?>"><?php echo $this->__('Cancel Order') ?></a></p>

@@ -14,15 +14,15 @@
  * versions in the future. If you wish to customize Eximbay module for your
  * needs please refer to https://www.eximbay.com for more information.
  *
- * @category    Mage
- * @package     Mage_Eximbay
- * @copyright   Copyright (c) 2013 KRPartners Co.,Ltd (https://www.eximbay.com)
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2014 KRPartners Co.,Ltd (https://www.eximbay.com)
  * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
  */
 ?>
-<?php echo $this->htmlEscape($this->getMethod()->getTitle()) ?><br />
+<?php echo $this->escapeHtml($this->getMethod()->getTitle()) ?><br />
 <?php if ($this->getInfo()->getLastTransId() == ''): ?>
     <em><?php echo Mage::helper('eximbay')->__('You will be redirected to our secure payment page when you place an order.') ?></em>
 <?php else: ?>
-    <?php echo Mage::helper('eximbay')->__('Eximbay Transaction ID: %s', $this->htmlEscape($this->getInfo()->getLastTransId())) ?><br />
+    <?php echo Mage::helper('eximbay')->__('Eximbay Transaction ID: %s', $this->escapeHtml($this->getInfo()->getLastTransId())) ?><br />
 <?php endif; ?>

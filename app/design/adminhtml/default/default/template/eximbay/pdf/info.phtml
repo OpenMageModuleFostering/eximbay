@@ -14,13 +14,13 @@
  * versions in the future. If you wish to customize Eximbay module for your
  * needs please refer to https://www.eximbay.com for more information.
  *
- * @category    Mage
- * @package     Mage_Eximbay
- * @copyright   Copyright (c) 2013 KRPartners Co.,Ltd (https://www.eximbay.com)
+ * @category    design
+ * @package     default_default
+ * @copyright   Copyright (c) 2014 KRPartners Co.,Ltd (https://www.eximbay.com)
  * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
  */
 ?>
 <?php echo $this->getMethod()->getTitle() ?>
     {{pdf_row_separator}}
-<?php echo Mage::helper('eximbay')->__('eximbay Transaction ID: %s', $this->htmlEscape($this->getInfo()->getLastTransId())) ?>
+<?php echo Mage::helper('eximbay')->__('Eximbay Transaction ID: %s', $this->escapeHtml($this->getInfo()->getLastTransId())) ?>
     {{pdf_row_separator}}

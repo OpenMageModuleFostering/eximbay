@@ -14,17 +14,30 @@
  * versions in the future. If you wish to customize Eximbay module for your
  * needs please refer to https://www.eximbay.com for more information.
  *
- * @category    design
- * @package     base_default
+ * @category    Krp
+ * @package     Krp_Eximbay
  * @copyright   Copyright (c) 2014 KRPartners Co.,Ltd (https://www.eximbay.com)
  * @license     http://opensource.org/licenses/GPL-3.0  GNU General Public License (GPL 3.0)
  */
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $this->getLang() ?>" lang="<?php echo $this->getLang() ?>">
-<head>   
-</head>
-<body>
-    <?php echo $this->getChildHtml('content') ?>
-</body>
-</html>
+class Krp_Eximbay_Block_Info extends Mage_Payment_Block_Info
+{
+    /** Constructor. Set template. */
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->setTemplate('eximbay/info.phtml');
+    }
+
+    /** Returns code of payment method @return string */
+    public function getMethodCode()
+    {
+        return $this->getInfo()->getMethodInstance()->getCode();
+    }
+
+    /** Build PDF content of info block @return string */
+    public function toPdf()
+    {
+        $this->setTemplate('eximbay/pdf/info.phtml');
+        return $this->toHtml();
+    }
+}
