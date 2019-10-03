@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/Eximbay",
+    "name": "OpenMageModuleFostering\/Eximbay",
     "type": "magento-module",
     "license": "GNU-General-Public-License",
     "homepage": "",
     "description": "Official Eximbay Payment Extension",
     "authors": [
-    {
-        "name": "KRPartners Co.,Ltd",
-        "email": "prokod@kr.net"
-    }
-],
+        {
+            "name": "KRPartners Co.,Ltd",
+            "email": "prokod@kr.net"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
